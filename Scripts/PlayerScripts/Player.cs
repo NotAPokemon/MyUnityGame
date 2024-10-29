@@ -79,28 +79,28 @@ public class Player : BaseEntity
     void HandleKeyInput()
     {
 
-        for (int i = 0; i < Mathf.Min(10, items.Count + 1); i++)
+        for (int i = 0; i < Mathf.Min(9, items.Count); i++)
         {
-            if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i)))
+            if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + (i + 1))))
             {
-                if (i - 1 != Num)
+                if (i != Num)
                 {
                     try
                     {
                         handItems[0].transform.SetParent(inventory.transform);
                         handItems[0].transform.localPosition = Vector3.zero;
                         handItems[0].State = ItemState.Stored;
-                        handItems[0] = items[i - 1];
+                        handItems[0] = items[i];
                     }
                     catch
                     {
-                        handItems.Add(items[i - 1]);
+                        handItems.Add(items[i]);
                     }
-                    items[i - 1].State = ItemState.Hand;
-                    items[i - 1].transform.gameObject.SetActive(true);
-                    items[i - 1].transform.SetParent(Hand.transform, false);
-                    items[i - 1].transform.localPosition = Vector3.zero;
-                    Num = i - 1;
+                    items[i].State = ItemState.Hand;
+                    items[i].transform.gameObject.SetActive(true);
+                    items[i].transform.SetParent(Hand.transform, false);
+                    items[i].transform.localPosition = Vector3.zero;
+                    Num = i;
                 }
             }
         }
