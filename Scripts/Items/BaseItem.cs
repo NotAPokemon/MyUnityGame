@@ -74,14 +74,20 @@ public class BaseItem : MonoBehaviour
     protected virtual void groundAnimation()
     {
         float amount = 0.3f;
-        if (GetDistanceToLayerBelow(item.transform.position) >= 0.5)
+        float distanceBellow = GetDistanceToLayerBelow(item.transform.position);
+        if (distanceBellow >= 0.5)
         {
             GroundAnimationDirection = true;
             
-        } else if (GetDistanceToLayerBelow(item.transform.position) <= 0.1)
+        } else if (distanceBellow <= 0.1)
         {
             GroundAnimationDirection = false;
         }
+        if (distanceBellow >= 0.7)
+        {
+            amount *= 9.81f * 2f;
+        }
+
         amount *= GroundAnimationDirection ? -1 : 1;
         item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y + amount * Time.deltaTime, item.transform.position.z);
         item.transform.Rotate(new Vector3(0, amount, 0));
