@@ -14,6 +14,9 @@ public class Player : BaseEntity
     public bool locked;
     public GameObject inventory;
     public GameObject Hand;
+    public GameObject Manager;
+
+    public MouseMove mouse;
 
     public List<BaseItem> items;
     public List<BaseItem> handItems;
@@ -68,9 +71,28 @@ public class Player : BaseEntity
                 if (items.Count < 30)
                 {
                     itemsOnGround[i].State = ItemState.Stored;
-                    items.Add(itemsOnGround[i]);
                     itemsOnGround[i].transform.SetParent(inventory.transform);
                     itemsOnGround[i].transform.localPosition = Vector3.zero;
+                    itemsOnGround[i].transform.localRotation = Quaternion.Euler(0,0,0);
+                    if (Num == -1)
+                    {
+                        items.Insert(0, itemsOnGround[i]);
+                        try
+                        {
+                            handItems[0] = itemsOnGround[i];
+                        } catch
+                        {
+                            handItems.Add(itemsOnGround[i]);
+                        }
+                        handItems[0].transform.SetParent(Hand.transform);
+                        handItems[0].transform.localPosition = Vector3.zero;
+                        handItems[0].State = ItemState.Hand;
+                        Num = 0;
+                    } else
+                    {
+                        items.Add(itemsOnGround[i]);
+                    }
+                    
                 }
             }
         }
@@ -102,6 +124,18 @@ public class Player : BaseEntity
                     items[i].transform.localPosition = Vector3.zero;
                     Num = i;
                 }
+            }
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            if (Num != -1)
+            {
+                handItems[0].transform.SetParent(Manager.transform);
+                handItems[0].transform.position = transform.position + transform.forward * 2;
+                handItems[0].State = ItemState.Ground;
+                handItems.RemoveAt(0);
+                items.RemoveAt(Num);
+                Num = -1;
             }
         }
     }

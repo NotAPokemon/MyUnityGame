@@ -48,7 +48,7 @@ public class BaseItem : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.SphereCast(ray, 2, out hit))
         {
             if (Vector3.Distance(hit.transform.position, transform.position) <= 3)
             {
@@ -101,7 +101,7 @@ public class BaseItem : MonoBehaviour
                 clickAnimation();
             }
             item.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0))
             {
                 if (!doingAnimaton)
                 {
