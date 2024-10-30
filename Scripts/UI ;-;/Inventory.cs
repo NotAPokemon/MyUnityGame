@@ -55,6 +55,26 @@ public class Inventory : BaseUI
         BaseItem temp = player.items[a];
         player.items[a] = player.items[b];
         player.items[b] = temp;
+        if (a == player.Num)
+        {
+            player.setHeldItem(player.items[a], 0);
+        }
+
+        if (b == player.Num)
+        {
+            player.setHeldItem(player.items[b], 0);
+        }
+    }
+
+    protected override void checkKeys()
+    {
+        base.checkKeys();
+        if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
+        {
+            isOpen = !isOpen;
+            Selected = -1;
+            changed = false;
+        }
     }
 
 

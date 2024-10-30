@@ -27,9 +27,6 @@ public class BaseUI : MonoBehaviour
         {
             openUI();
             toggleOn();
-        } else if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
-        {
-            isOpen = !isOpen;
         }
     }
 

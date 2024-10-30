@@ -60,6 +60,28 @@ public class Player : BaseEntity
         locked = true;
     }
 
+    public void setHeldItem(BaseItem item, int mode)
+    {
+        try
+        {
+            if (mode == 0)
+            {
+                handItems[0].transform.SetParent(inventory.transform);
+                handItems[0].transform.localPosition = Vector3.zero;
+                handItems[0].State = ItemState.Stored;
+            }
+            handItems[0] = item;
+        }
+        catch
+        {
+            handItems.Add(item);
+        }
+        handItems[0].transform.SetParent(Hand.transform);
+        handItems[0].transform.localPosition = Vector3.zero;
+        handItems[0].State = ItemState.Hand;
+        handItems[0].gameObject.SetActive(true);
+    }
+
     void HandlePickup()
     {
         BaseItem[] itemsOnGround = FindObjectOfType<EntityManager>().GetComponentsInChildren<BaseItem>();
@@ -78,22 +100,28 @@ public class Player : BaseEntity
                         if (Num == -1)
                         {
                             items.Insert(0, itemsOnGround[i]);
-                            try
-                            {
-                                handItems[0] = itemsOnGround[i];
-                            }
-                            catch
-                            {
-                                handItems.Add(itemsOnGround[i]);
-                            }
-                            handItems[0].transform.SetParent(Hand.transform);
-                            handItems[0].transform.localPosition = Vector3.zero;
-                            handItems[0].State = ItemState.Hand;
+                            setHeldItem(itemsOnGround[i], 1);
                             Num = 0;
                         }
                         else
                         {
-                            items.Add(itemsOnGround[i]);
+                            bool added = false;
+                            for (int j = 0; j < items.Count; j++)
+                            {
+                                if (items[j] is NullItem)
+                                {
+                                    items[j] = itemsOnGround[i];
+                                    if (j == Num)
+                                    {
+                                        setHeldItem(itemsOnGround[i], 1);
+                                    }
+                                    added = true;
+                                }
+                            }
+                            if (!added)
+                            {
+                                items.Add(itemsOnGround[i]);
+                            }
                         }
 
                     }
@@ -101,6 +129,16 @@ public class Player : BaseEntity
             }
             
         }
+    }
+
+    public void dropItem()
+    {
+        handItems[0].transform.SetParent(Manager.transform);
+        handItems[0].transform.position = transform.position + transform.forward * 2;
+        handItems[0].State = ItemState.Ground;
+        handItems.RemoveAt(0);
+        items.RemoveAt(Num);
+        Num = -1;
     }
 
     void HandleKeyInput()
@@ -112,21 +150,7 @@ public class Player : BaseEntity
             {
                 if (i != Num)
                 {
-                    try
-                    {
-                        handItems[0].transform.SetParent(inventory.transform);
-                        handItems[0].transform.localPosition = Vector3.zero;
-                        handItems[0].State = ItemState.Stored;
-                        handItems[0] = items[i];
-                    }
-                    catch
-                    {
-                        handItems.Add(items[i]);
-                    }
-                    items[i].State = ItemState.Hand;
-                    items[i].transform.gameObject.SetActive(true);
-                    items[i].transform.SetParent(Hand.transform, false);
-                    items[i].transform.localPosition = Vector3.zero;
+                    setHeldItem(items[i], 0);
                     Num = i;
                 }
             }
@@ -135,12 +159,7 @@ public class Player : BaseEntity
         {
             if (Num != -1 && handItems[0] is not NullItem)
             {
-                handItems[0].transform.SetParent(Manager.transform);
-                handItems[0].transform.position = transform.position + transform.forward * 2;
-                handItems[0].State = ItemState.Ground;
-                handItems.RemoveAt(0);
-                items.RemoveAt(Num);
-                Num = -1;
+                dropItem();
             }
         }
     }
