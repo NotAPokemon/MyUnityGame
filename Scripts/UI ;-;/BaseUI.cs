@@ -21,33 +21,6 @@ public class BaseUI : MonoBehaviour
         isOpen = !isOpen;
     }
 
-    public Sprite CreateSpriteFromGameObject(GameObject targetObject)
-    {
-        Renderer renderer = targetObject.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            Texture2D texture = renderer.material.mainTexture as Texture2D;
-
-            if (texture != null)
-            {
-                Rect rect = new Rect(0, 0, texture.width, texture.height);
-                Vector2 pivot = new Vector2(0.5f, 0.5f);
-                Sprite sprite = Sprite.Create(texture, rect, pivot);
-                return sprite;
-            }
-            else
-            {
-                Debug.LogWarning("No texture found on the object's material.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No Renderer found on the target GameObject.");
-        }
-
-        return null;
-    }
-
     protected virtual void checkKeys()
     {
         if (Input.GetKeyDown(keyCode))
