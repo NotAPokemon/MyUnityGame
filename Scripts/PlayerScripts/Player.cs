@@ -66,35 +66,41 @@ public class Player : BaseEntity
         BaseItem[] itemsOnGround = FindObjectOfType<EntityManager>().GetComponentsInChildren<BaseItem>();
         for (int i = 0; i < itemsOnGround.Length; i++)
         {
-            if (Vector3.Distance(transform.position, itemsOnGround[i].transform.position) <= 1)
+            if (itemsOnGround[i] is not NullItem)
             {
-                if (items.Count < 30)
+                if (Vector3.Distance(transform.position, itemsOnGround[i].transform.position) <= 1)
                 {
-                    itemsOnGround[i].State = ItemState.Stored;
-                    itemsOnGround[i].transform.SetParent(inventory.transform);
-                    itemsOnGround[i].transform.localPosition = Vector3.zero;
-                    itemsOnGround[i].transform.localRotation = Quaternion.Euler(0,0,0);
-                    if (Num == -1)
+                    if (items.Count < 30)
                     {
-                        items.Insert(0, itemsOnGround[i]);
-                        try
+                        itemsOnGround[i].State = ItemState.Stored;
+                        itemsOnGround[i].transform.SetParent(inventory.transform);
+                        itemsOnGround[i].transform.localPosition = Vector3.zero;
+                        itemsOnGround[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        if (Num == -1)
                         {
-                            handItems[0] = itemsOnGround[i];
-                        } catch
-                        {
-                            handItems.Add(itemsOnGround[i]);
+                            items.Insert(0, itemsOnGround[i]);
+                            try
+                            {
+                                handItems[0] = itemsOnGround[i];
+                            }
+                            catch
+                            {
+                                handItems.Add(itemsOnGround[i]);
+                            }
+                            handItems[0].transform.SetParent(Hand.transform);
+                            handItems[0].transform.localPosition = Vector3.zero;
+                            handItems[0].State = ItemState.Hand;
+                            Num = 0;
                         }
-                        handItems[0].transform.SetParent(Hand.transform);
-                        handItems[0].transform.localPosition = Vector3.zero;
-                        handItems[0].State = ItemState.Hand;
-                        Num = 0;
-                    } else
-                    {
-                        items.Add(itemsOnGround[i]);
+                        else
+                        {
+                            items.Add(itemsOnGround[i]);
+                        }
+
                     }
-                    
                 }
             }
+            
         }
     }
 
@@ -105,7 +111,7 @@ public class Player : BaseEntity
         {
             if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + (i + 1))))
             {
-                if (i != Num)
+                if (i != Num && items[i] is not NullItem)
                 {
                     try
                     {
@@ -128,7 +134,7 @@ public class Player : BaseEntity
         }
         if (Input.GetKey(KeyCode.Q))
         {
-            if (Num != -1)
+            if (Num != -1 && handItems[0] is not NullItem)
             {
                 handItems[0].transform.SetParent(Manager.transform);
                 handItems[0].transform.position = transform.position + transform.forward * 2;
