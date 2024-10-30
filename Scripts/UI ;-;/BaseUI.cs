@@ -48,10 +48,8 @@ public class BaseUI : MonoBehaviour
         return null;
     }
 
-    // Update is called once per frame
-    protected virtual void Update()
+    protected virtual void checkKeys()
     {
-        component.SetActive(isOpen);
         if (Input.GetKeyDown(keyCode))
         {
             openUI();
@@ -60,6 +58,12 @@ public class BaseUI : MonoBehaviour
         {
             isOpen = !isOpen;
         }
-        
+    }
+
+    // Update is called once per frame
+    protected virtual void Update()
+    {
+        component.SetActive(isOpen);
+        checkKeys();
     }
 }
