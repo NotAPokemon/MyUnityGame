@@ -11,6 +11,7 @@ public class BaseItem : MonoBehaviour
     protected bool doingAnimaton = false;
     public float attackTime = 0.5f;
     protected float time;
+    public Sprite icon;
 
     
 
@@ -101,7 +102,7 @@ public class BaseItem : MonoBehaviour
                 clickAnimation();
             }
             item.SetActive(true);
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0) && !FindObjectOfType<Player>().locked)
             {
                 if (!doingAnimaton)
                 {
@@ -110,7 +111,7 @@ public class BaseItem : MonoBehaviour
                     clickAnimation();
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetKeyDown(KeyCode.Mouse1) && !FindObjectOfType<Player>().locked)
             {
                 rightClick();
             }

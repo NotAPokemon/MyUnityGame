@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BaseUI : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class BaseUI : MonoBehaviour
     protected bool isOpen = false;
     public GameObject component;
     public KeyCode keyCode;
+    
 
     protected virtual void openUI()
     {
@@ -54,6 +56,10 @@ public class BaseUI : MonoBehaviour
         {
             openUI();
             toggleOn();
+        } else if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
+        {
+            isOpen = !isOpen;
         }
+        
     }
 }
