@@ -10,10 +10,12 @@ public class MouseMove : MonoBehaviour
     public float MouseRotationX = 0f;
     public float MouseRotationY = 0f;
     public float MouseSensitvity = 0f;
+    Player player;
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        player = FindObjectOfType<Player>();
     }
 
 
