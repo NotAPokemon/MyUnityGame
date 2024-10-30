@@ -113,7 +113,7 @@ public class Inventory : BaseUI
                 LastImage.enabled = clickedSprite != null;
                 
                 swapItems(Selected, LastClicked);
-                LastClicked = -1;
+                Selected = -1;
             }
         }
     }
