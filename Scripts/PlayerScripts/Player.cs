@@ -111,7 +111,7 @@ public class Player : BaseEntity
         {
             if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + (i + 1))))
             {
-                if (i != Num && items[i] is not NullItem)
+                if (i != Num)
                 {
                     try
                     {
