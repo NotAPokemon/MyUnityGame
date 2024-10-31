@@ -60,15 +60,21 @@ public class Player : BaseEntity
         locked = true;
     }
 
+    public void storeItem(BaseItem item)
+    {
+        item.transform.SetParent(inventory.transform);
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        item.State = ItemState.Stored;
+    }
+
     public void setHeldItem(BaseItem item, int mode)
     {
         try
         {
             if (mode == 0)
             {
-                handItems[0].transform.SetParent(inventory.transform);
-                handItems[0].transform.localPosition = Vector3.zero;
-                handItems[0].State = ItemState.Stored;
+                storeItem(handItems[0]);
             }
             handItems[0] = item;
         }
@@ -93,10 +99,7 @@ public class Player : BaseEntity
                 {
                     if (items.Count < 30)
                     {
-                        itemsOnGround[i].State = ItemState.Stored;
-                        itemsOnGround[i].transform.SetParent(inventory.transform);
-                        itemsOnGround[i].transform.localPosition = Vector3.zero;
-                        itemsOnGround[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        storeItem(itemsOnGround[i]);
                         if (Num == -1)
                         {
                             items.Insert(0, itemsOnGround[i]);
