@@ -60,6 +60,19 @@ public class Player : BaseEntity
         locked = true;
     }
 
+    public int getItemAmount()
+    {
+        int count = 0;
+        for (int i = 0; i < items.Count; i ++)
+        {
+            if (items[i] is not NullItem)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public void storeItem(BaseItem item)
     {
         item.transform.SetParent(inventory.transform);
@@ -97,7 +110,7 @@ public class Player : BaseEntity
             {
                 if (Vector3.Distance(transform.position, itemsOnGround[i].transform.position) <= 1)
                 {
-                    if (items.Count < 30)
+                    if (getItemAmount() < 30)
                     {
                         storeItem(itemsOnGround[i]);
                         if (Num == -1)
@@ -119,6 +132,7 @@ public class Player : BaseEntity
                                         setHeldItem(itemsOnGround[i], 1);
                                     }
                                     added = true;
+                                    break;
                                 }
                             }
                             if (!added)

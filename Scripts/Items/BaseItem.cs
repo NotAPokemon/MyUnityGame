@@ -102,7 +102,7 @@ public class BaseItem : MonoBehaviour
                 clickAnimation();
             }
             item.SetActive(true);
-            if (Input.GetKey(KeyCode.Mouse0) && !FindObjectOfType<Player>().locked)
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !FindObjectOfType<Player>().locked)
             {
                 if (!doingAnimaton)
                 {
@@ -111,7 +111,7 @@ public class BaseItem : MonoBehaviour
                     clickAnimation();
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Mouse1) && !FindObjectOfType<Player>().locked)
+            if (Input.GetKey(KeyCode.Mouse1) && !FindObjectOfType<Player>().locked)
             {
                 rightClick();
             }

@@ -8,7 +8,7 @@ public class Inventory : BaseUI
 {
     List<Image> images = new List<Image>();
     public int LastClicked = -1;
-    public int Selected = 0;
+    public int Selected = -1;
     public bool changed = false;
     public NullItem nullItem;
     public GameObject fillers;
@@ -32,6 +32,7 @@ public class Inventory : BaseUI
                 images.Add(image);
                 image.sprite = item.icon;
             }
+            Selected = -1;
         }
     }
 
