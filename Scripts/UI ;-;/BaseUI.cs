@@ -19,14 +19,19 @@ public class BaseUI : MonoBehaviour
     public void toggleOn()
     {
         isOpen = !isOpen;
+        UIManager.UIOpen = isOpen;
+        UIManager.ui = isOpen ? this : null;
     }
 
     protected virtual void checkKeys()
     {
         if (Input.GetKeyDown(keyCode))
         {
-            openUI();
-            toggleOn();
+            if (!UIManager.UIOpen || UIManager.ui.Equals(this)) 
+            {
+                openUI();
+                toggleOn();
+            }
         }
     }
 

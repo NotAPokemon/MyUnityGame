@@ -12,13 +12,7 @@ public class Inventory : BaseUI
     public bool changed = false;
     public NullItem nullItem;
     public GameObject fillers;
-    GameObject main;
 
-
-    void Start()
-    {
-        main = transform.GetChild(0).gameObject;
-    }
 
     protected override void openUI()
     {
@@ -27,7 +21,7 @@ public class Inventory : BaseUI
             BaseItem item = player.items[i];
             if (item is not NullItem)
             {
-                Image image = main.transform.GetChild(i).GetChild(0).GetComponentInChildren<Image>();
+                Image image = component.transform.GetChild(i).GetChild(0).GetComponentInChildren<Image>();
                 image.enabled = true;
                 images.Add(image);
                 image.sprite = item.icon;
@@ -97,9 +91,9 @@ public class Inventory : BaseUI
             if (LastClicked != -1)
             {
                 changed = false;
-                Image LastImage = main.transform.GetChild(LastClicked).GetChild(0).GetComponentInChildren<Image>();
+                Image LastImage = component.transform.GetChild(LastClicked).GetChild(0).GetComponentInChildren<Image>();
                 Sprite lastSprite;
-                Image Clicked = main.transform.GetChild(Selected).GetChild(0).GetComponentInChildren<Image>();
+                Image Clicked = component.transform.GetChild(Selected).GetChild(0).GetComponentInChildren<Image>();
                 Sprite clickedSprite;
                 try
                 {
