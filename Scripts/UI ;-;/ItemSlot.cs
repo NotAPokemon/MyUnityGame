@@ -6,17 +6,18 @@ using UnityEngine.EventSystems;
 public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
     public int index;
-    Inventory inventory;
+    protected BaseUI inventory;
 
-    void Start()
+    protected virtual void Start()
     {
         inventory = FindObjectOfType<Inventory>();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public virtual void OnPointerClick(PointerEventData eventData)
     {
-        inventory.changed = true;
-        inventory.LastClicked = inventory.Selected;
-        inventory.Selected = index;
+        Inventory temp = inventory as Inventory;
+        temp.changed = true;
+        temp.LastClicked = temp.Selected;
+        temp.Selected = index;
     }
 }

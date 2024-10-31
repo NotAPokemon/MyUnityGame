@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Armory : BaseUI
 {
-    
+    public bool changed;
 
-    
+
 }
