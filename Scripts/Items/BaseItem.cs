@@ -12,12 +12,14 @@ public class BaseItem : MonoBehaviour
     public float attackTime = 0.5f;
     protected float time;
     public Sprite icon;
+    public Player player;
 
     
 
     protected virtual void Start()
     {
         item = transform.gameObject;
+        player = FindObjectOfType<Player>();
     }
 
     protected virtual void rightClick()
@@ -128,4 +130,4 @@ public class BaseItem : MonoBehaviour
     }
 }
 
-public enum ItemState { Stored, Ground, Hand };
+public enum ItemState { Stored, Ground, Hand, Worn };

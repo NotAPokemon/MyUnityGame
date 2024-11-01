@@ -9,7 +9,9 @@ public class BaseUI : MonoBehaviour
     protected bool isOpen = false;
     public GameObject component;
     public KeyCode keyCode;
-    
+    public bool changed = false;
+    public int selected = -1;
+
 
     protected virtual void openUI()
     {
@@ -35,10 +37,21 @@ public class BaseUI : MonoBehaviour
         }
     }
 
+    protected virtual void ifChanged()
+    {
+
+    }
+
     // Update is called once per frame
     protected virtual void Update()
     {
         component.SetActive(isOpen);
         checkKeys();
+        player.locked = isOpen;
+        player.mouse.Locked = !isOpen;
+        if (changed)
+        {
+            ifChanged();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Player : BaseEntity
@@ -15,11 +16,25 @@ public class Player : BaseEntity
     public GameObject Hand;
     public GameObject Manager;
 
+    private float hiddenMaxHealth;
+    private float hiddendamage;
+    private float hiddenregen;
+
+    float defense;
+
+    private float lastHealth;
+
     public MouseMove mouse;
+
+    public float regen;
 
     public List<BaseItem> items;
     public List<BaseItem> handItems;
+    public List<BaseArmor> armors;
     public int Num = -1;
+
+
+
 
 
 
@@ -27,8 +42,63 @@ public class Player : BaseEntity
     protected override void Start()
     {
         base.Start();
-        FindObjectOfType<MapGen>().noiseData.seed = UnityEngine.Random.Range(10,100000);
+        FindObjectOfType<MapGen>().noiseData.seed = UnityEngine.Random.Range(10, 100000);
+        hiddenMaxHealth = MaxHealth;
+        hiddendamage = damageAmount;
+        lastHealth = health;
+        hiddenregen = regen;
     }
+
+    public void swapItems(int a, int b)
+    {
+        if (a < 0 || b < 0)
+        {
+            Debug.LogError("Indices must be non-negative.");
+            return;
+        }
+
+        int max = Mathf.Max(a, b);
+        while (items.Count <= max)
+        {
+            NullItem filler = Instantiate(Inventory.nullItem);
+            filler.transform.SetParent(inventory.GetComponent<Inventory>().fillers.transform);
+            items.Add(filler);
+        }
+
+        // Swap items
+        BaseItem temp = items[a];
+        items[a] = items[b];
+        items[b] = temp;
+        if (a == Num)
+        {
+            setHeldItem(items[a], 0);
+        }
+
+        if (b == Num)
+        {
+            setHeldItem(items[b], 0);
+        }
+    }
+
+
+    public void swarpArmor(int armorIndex, int itemIndex)
+    {
+        if (armorIndex == -1)
+        {
+            Debug.LogError("Unknown armor type");
+            return;
+        }
+        BaseArmor temp = armors[armorIndex];
+        temp.equiped = false;
+        armors[armorIndex] =  (BaseArmor)items[itemIndex];
+        items[itemIndex] = temp;
+        if (itemIndex == Num)
+        {
+            setHeldItem(items[itemIndex], 0);
+        }
+
+    }
+
 
     void HandleMovement()
     {
@@ -181,7 +251,38 @@ public class Player : BaseEntity
         }
     }
 
-    
+    void HandleBouns()
+    {
+        float def = 0f;
+        float hp = 0f;
+        float dmg = 0f;
+        float rg = 0f;
+        for (int i = 0;i < armors.Count;i++)
+        {
+            def += armors[i].armorBonus;
+            hp += armors[i].healthBonus;
+            dmg += armors[i].damageBonus;
+            rg += armors[i].regenBonus;
+        }
+        MaxHealth = hp + hiddenMaxHealth;
+        damageAmount = dmg + hiddendamage;
+        regen = rg + hiddenregen;
+        defense = def;
+    }
+
+    void HandleRegen()
+    {
+        health += regen * Time.deltaTime;
+        health = Mathf.Clamp(health, 0f, MaxHealth);
+    }
+
+    void HandleDef(float amount)
+    {
+        health += amount * (Mathf.Exp(-((defense * Mathf.Log10(100))/(100000))));
+        health = Mathf.Clamp(health, 0f, MaxHealth);
+    }
+
+
     protected override void Update()
     {
         base.Update();
@@ -189,5 +290,12 @@ public class Player : BaseEntity
         HandleMovement();
         HandlePickup();
         HandleKeyInput();
+        if (lastHealth > health)
+        {
+            HandleDef(lastHealth - health);
+            lastHealth = health;
+        }
+        HandleRegen();
+        HandleBouns();
     }
 }

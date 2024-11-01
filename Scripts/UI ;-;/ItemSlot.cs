@@ -17,7 +17,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
         Inventory temp = inventory as Inventory;
         temp.changed = true;
-        temp.LastClicked = temp.Selected;
-        temp.Selected = index;
+        temp.LastClicked = temp.selected;
+        temp.selected = index;
     }
 }

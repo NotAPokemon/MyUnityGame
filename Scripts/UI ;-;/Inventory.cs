@@ -8,9 +8,7 @@ public class Inventory : BaseUI
 {
     List<Image> images = new List<Image>();
     public int LastClicked = -1;
-    public int Selected = -1;
-    public bool changed = false;
-    public NullItem nullItem;
+    public static NullItem nullItem;
     public GameObject fillers;
 
 
@@ -26,49 +24,67 @@ public class Inventory : BaseUI
                 images.Add(image);
                 image.sprite = item.icon;
             }
-            Selected = -1;
+            selected = -1;
         }
     }
 
-    public void swapItems(int a, int b)
-    {
-        if (a < 0 || b < 0)
-        {
-            Debug.LogError("Indices must be non-negative.");
-            return;
-        }
-
-        int max = Mathf.Max(a, b);
-        while (player.items.Count <= max)
-        {
-            NullItem filler = Instantiate(nullItem);
-            filler.transform.SetParent(fillers.transform);
-            player.items.Add(filler);
-        }
-
-        // Swap items
-        BaseItem temp = player.items[a];
-        player.items[a] = player.items[b];
-        player.items[b] = temp;
-        if (a == player.Num)
-        {
-            player.setHeldItem(player.items[a], 0);
-        }
-
-        if (b == player.Num)
-        {
-            player.setHeldItem(player.items[b], 0);
-        }
-    }
+    
 
     protected override void checkKeys()
     {
         base.checkKeys();
         if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
         {
-            isOpen = !isOpen;
-            Selected = -1;
+            toggleOn();
+            selected = -1;
             changed = false;
+        }
+    }
+
+
+    protected override void ifChanged()
+    {
+        if (LastClicked != -1)
+        {
+            changed = false;
+            Image LastImage = component.transform.GetChild(LastClicked).GetChild(0).GetComponentInChildren<Image>();
+            Sprite lastSprite;
+            Image Clicked = component.transform.GetChild(selected).GetChild(0).GetComponentInChildren<Image>();
+            Sprite clickedSprite;
+            try
+            {
+                player.items[LastClicked].GetType();
+                lastSprite = LastImage.sprite;
+                if (player.items[LastClicked] is NullItem)
+                {
+                    lastSprite = null;
+                }
+            }
+            catch
+            {
+                lastSprite = null;
+            }
+            try
+            {
+                player.items[selected].GetType();
+                clickedSprite = Clicked.sprite;
+                if (player.items[selected] is NullItem)
+                {
+                    clickedSprite = null;
+                }
+            }
+            catch
+            {
+                clickedSprite = null;
+            }
+
+            LastImage.sprite = clickedSprite;
+            Clicked.sprite = lastSprite;
+            Clicked.enabled = lastSprite != null;
+            LastImage.enabled = clickedSprite != null;
+
+            player.swapItems(selected, LastClicked);
+            selected = -1;
         }
     }
 
@@ -76,8 +92,6 @@ public class Inventory : BaseUI
     protected override void Update()
     {
         base.Update();
-        player.locked = isOpen;
-        player.mouse.Locked = !isOpen;
         if (!isOpen && images.Count >= 1)
         {
             for (int i = 0; i < images.Count; i++)
@@ -85,51 +99,6 @@ public class Inventory : BaseUI
                 images[i].enabled = false;
             }
             images.Clear();
-        }
-        if (changed)
-        {
-            if (LastClicked != -1)
-            {
-                changed = false;
-                Image LastImage = component.transform.GetChild(LastClicked).GetChild(0).GetComponentInChildren<Image>();
-                Sprite lastSprite;
-                Image Clicked = component.transform.GetChild(Selected).GetChild(0).GetComponentInChildren<Image>();
-                Sprite clickedSprite;
-                try
-                {
-                    player.items[LastClicked].GetType();
-                    lastSprite = LastImage.sprite;
-                    if (player.items[LastClicked] is NullItem)
-                    {
-                        lastSprite = null;
-                    }
-                }
-                catch
-                {
-                    lastSprite = null;
-                }
-                try
-                {
-                    player.items[Selected].GetType();
-                    clickedSprite = Clicked.sprite;
-                    if (player.items[Selected] is NullItem)
-                    {
-                        clickedSprite = null;
-                    }
-                }
-                catch
-                {
-                    clickedSprite = null;
-                }
-
-                LastImage.sprite = clickedSprite;
-                Clicked.sprite = lastSprite;
-                Clicked.enabled = lastSprite != null;
-                LastImage.enabled = clickedSprite != null;
-                
-                swapItems(Selected, LastClicked);
-                Selected = -1;
-            }
         }
     }
 

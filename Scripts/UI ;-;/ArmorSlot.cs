@@ -13,5 +13,7 @@ public class ArmorSlot : ItemSlot
     public override void OnPointerClick(PointerEventData eventData)
     {
         Armory temp = inventory as Armory;
+        temp.changed = true;
+        temp.selected = index;
     }
 }
