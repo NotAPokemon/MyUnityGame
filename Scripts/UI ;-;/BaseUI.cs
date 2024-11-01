@@ -47,8 +47,8 @@ public class BaseUI : MonoBehaviour
     {
         component.SetActive(isOpen);
         checkKeys();
-        player.locked = isOpen;
-        player.mouse.Locked = !isOpen;
+        player.locked = UIManager.UIOpen;
+        player.mouse.Locked = !UIManager.UIOpen;
         if (changed)
         {
             ifChanged();

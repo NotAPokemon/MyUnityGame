@@ -8,9 +8,17 @@ public class Inventory : BaseUI
 {
     List<Image> images = new List<Image>();
     public int LastClicked = -1;
+    public NullItem nullItemthis;
     public static NullItem nullItem;
-    public GameObject fillers;
+    public GameObject fillerss;
+    public static GameObject fillers;
 
+
+    private void Awake()
+    {
+        nullItem = nullItemthis;
+        fillers = fillerss;
+    }
 
     protected override void openUI()
     {

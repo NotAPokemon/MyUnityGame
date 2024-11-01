@@ -61,11 +61,10 @@ public class Player : BaseEntity
         while (items.Count <= max)
         {
             NullItem filler = Instantiate(Inventory.nullItem);
-            filler.transform.SetParent(inventory.GetComponent<Inventory>().fillers.transform);
+            filler.transform.SetParent(Inventory.fillers.transform);
             items.Add(filler);
         }
 
-        // Swap items
         BaseItem temp = items[a];
         items[a] = items[b];
         items[b] = temp;
@@ -171,6 +170,28 @@ public class Player : BaseEntity
         handItems[0].gameObject.SetActive(true);
     }
 
+    void addItem(BaseItem item)
+    {
+        bool added = false;
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i] is NullItem)
+            {
+                items[i] = item;
+                if (i == Num)
+                {
+                    setHeldItem(item, 1);
+                }
+                added = true;
+                break;
+            }
+        }
+        if (!added)
+        {
+            items.Add(item);
+        }
+    }
+
     void HandlePickup()
     {
         BaseItem[] itemsOnGround = FindObjectOfType<EntityManager>().GetComponentsInChildren<BaseItem>();
@@ -191,26 +212,8 @@ public class Player : BaseEntity
                         }
                         else
                         {
-                            bool added = false;
-                            for (int j = 0; j < items.Count; j++)
-                            {
-                                if (items[j] is NullItem)
-                                {
-                                    items[j] = itemsOnGround[i];
-                                    if (j == Num)
-                                    {
-                                        setHeldItem(itemsOnGround[i], 1);
-                                    }
-                                    added = true;
-                                    break;
-                                }
-                            }
-                            if (!added)
-                            {
-                                items.Add(itemsOnGround[i]);
-                            }
+                            addItem(itemsOnGround[i]);
                         }
-
                     }
                 }
             }

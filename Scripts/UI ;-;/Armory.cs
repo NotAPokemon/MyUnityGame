@@ -36,7 +36,7 @@ public class Armory : BaseUI
 
     protected override void ifChanged()
     {
-        
+        changed = false;
     }
 
     protected override void Update()
