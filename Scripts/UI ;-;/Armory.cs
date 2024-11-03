@@ -84,6 +84,10 @@ public class Armory : BaseUI
                 }
                 player.armors[selected - 30] = Player.makeNullItem();
                 
+            } 
+            else if (selected >= 30)
+            {
+
             }
             else if (player.items[selected] is not NullItem && player.items[selected] is BaseArmor)
             {

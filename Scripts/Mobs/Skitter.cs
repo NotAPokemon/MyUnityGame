@@ -18,6 +18,9 @@ public class Skitter : Mob
             {
                 turn();
             }
+        } else
+        {
+            idle();
         }
         if (!isGrounded())
         {

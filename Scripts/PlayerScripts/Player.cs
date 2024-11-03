@@ -31,9 +31,11 @@ public class Player : BaseEntity
     public List<BaseArmor> armors;
     public int Num = -1;
     public static Player player;
+    float timeFromLastReg = 0f;
 
 
- 
+
+
 
 
 
@@ -296,7 +298,12 @@ public class Player : BaseEntity
 
     void HandleRegen()
     {
-        health += regen * Time.deltaTime;
+        if (timeFromLastReg >= 1)
+        {
+            health += regen;
+            timeFromLastReg = 0f;
+        }
+        timeFromLastReg += Time.deltaTime;
         health = Mathf.Clamp(health, 0f, MaxHealth);
     }
 
@@ -306,11 +313,12 @@ public class Player : BaseEntity
     protected override void Update()
     {
         base.Update();
+        HandleRegen();
+        HandlePickup();
+        HandleBouns();
         if (locked) { return; }
         HandleMovement();
-        HandlePickup();
         HandleKeyInput();
-        HandleRegen();
-        HandleBouns();
+        
     }
 }

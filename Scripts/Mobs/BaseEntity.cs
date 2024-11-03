@@ -74,7 +74,7 @@ public class BaseEntity : MonoBehaviour
 
     protected virtual void HandleDamage(float amount)
     {
-        health += amount * (Mathf.Exp(-((defense * Mathf.Log10(100)) / (100000))));
+        health += amount * (1 - Mathf.Exp(-0.25f * ((defense * 100) / (100000))));
         health = Mathf.Clamp(health, 0f, MaxHealth);
     }
 

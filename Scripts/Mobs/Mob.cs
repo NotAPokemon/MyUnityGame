@@ -53,7 +53,12 @@ public class Mob : BaseEntity
     }
 
 
-
+    protected virtual void idle()
+    {
+        move = transform.right * Random.Range(-10,10) + transform.forward * Random.Range(-10,10);
+        move.y = yVelocity;
+        Controller.Move(move * speed * Time.deltaTime);
+    }
 
 
     protected void HandleMove(float x, float z)
