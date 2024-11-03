@@ -13,8 +13,9 @@ public class BaseItem : MonoBehaviour
     protected float time;
     public Sprite icon;
     public Player player;
+    float timeOnGround;
 
-    
+
 
     protected virtual void Start()
     {
@@ -99,6 +100,7 @@ public class BaseItem : MonoBehaviour
     protected virtual void Update()
     {
         if (State == ItemState.Hand) {
+            timeOnGround = 0;
             if (doingAnimaton)
             {
                 clickAnimation();
@@ -120,12 +122,21 @@ public class BaseItem : MonoBehaviour
 
         } else if (State == ItemState.Ground)
         {
+            timeOnGround += Time.deltaTime;
             item.SetActive(true);
             groundAnimation();
 
         } else if (State == ItemState.Stored)
         {
+            timeOnGround = 0;
             item.SetActive(false);
+        } else if (State == ItemState.Worn)
+        {
+            timeOnGround = 0;
+        }
+        if (timeOnGround >= 120)
+        {
+            Destroy(gameObject);
         }
     }
 }

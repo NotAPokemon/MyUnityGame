@@ -22,7 +22,7 @@ public class Player : BaseEntity
     private float hiddenregen;
     private float hiddenmana;
     private float hiddenmanareg;
-
+    private float hiddenspeed;
 
 
     public MouseMove mouse;
@@ -53,6 +53,7 @@ public class Player : BaseEntity
         hiddenregen = regen;
         hiddenmana = MaxMana;
         hiddenmanareg = manaRegen;
+        hiddenspeed = speed;
         player = this;
         for (int i = 0; i < 4; i++)
         {
@@ -71,7 +72,7 @@ public class Player : BaseEntity
             case "MAX_HEALTH":
                 return MaxHealth;
             case "DAMAGE":
-                return damageAmount;
+                return damageAmount + handItems[0].damage;
             case "HEALTH_REGENERATION":
                 return regen;
             case "DEFENSE":
@@ -150,7 +151,7 @@ public class Player : BaseEntity
         move = transform.right * x + transform.forward * z;
         HandleJump();
         move.y = yVelocity;
-        Controller.Move(move * speed * Time.deltaTime);
+        Controller.Move(move * speed * (mana/MaxMana) * Time.deltaTime);
     }
 
     void HandleJump()
@@ -300,6 +301,8 @@ public class Player : BaseEntity
             hp += armors[i].healthBonus;
             dmg += armors[i].damageBonus;
             rg += armors[i].regenBonus;
+            m += armors[i].manaBonus;
+            mrg += armors[i].manaRegenBonus;
         }
         MaxMana = m + hiddenmana;
         manaRegen = mrg + hiddenmanareg;
