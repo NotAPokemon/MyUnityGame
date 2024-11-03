@@ -68,6 +68,13 @@ public class Player : BaseEntity
         return -1;
     }
 
+    public static NullItem makeNullItem()
+    {
+        NullItem filler = Instantiate(Inventory.nullItem);
+        filler.transform.SetParent(Inventory.fillers.transform);
+        return filler;
+    }
+
     public void swapItems(int a, int b)
     {
         if (a < 0 || b < 0)
@@ -79,8 +86,7 @@ public class Player : BaseEntity
         int max = Mathf.Max(a, b);
         while (items.Count <= max)
         {
-            NullItem filler = Instantiate(Inventory.nullItem);
-            filler.transform.SetParent(Inventory.fillers.transform);
+            NullItem filler = makeNullItem();
             items.Add(filler);
         }
 
@@ -110,6 +116,8 @@ public class Player : BaseEntity
         temp.equiped = false;
         armors[armorIndex] =  (BaseArmor)items[itemIndex];
         items[itemIndex] = temp;
+        armors[armorIndex].State = ItemState.Worn;
+        items[itemIndex].State = ItemState.Stored;
         if (itemIndex == Num)
         {
             setHeldItem(items[itemIndex], 0);
@@ -189,7 +197,7 @@ public class Player : BaseEntity
         handItems[0].gameObject.SetActive(true);
     }
 
-    void addItem(BaseItem item)
+    public void addItem(BaseItem item)
     {
         bool added = false;
         for (int i = 0; i < items.Count; i++)

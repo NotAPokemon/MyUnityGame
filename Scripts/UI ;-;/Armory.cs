@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class Armory : BaseUI
@@ -43,6 +44,15 @@ public class Armory : BaseUI
     protected override void ifChanged()
     {
         changed = false;
+        if (selected >= 30 && player.armors[selected - 30] is not NullItem)
+        {
+            player.addItem(player.armors[selected - 30]);
+            player.armors[selected - 30] = Player.makeNullItem();
+        } else if (player.items[selected] is not NullItem && player.items[selected] is BaseArmor)
+        {
+            Player.player.swarpArmor((int)(player.items[selected] as BaseArmor).type, selected);
+        }
+        selected = -1;
     }
 
     protected override void Update()
