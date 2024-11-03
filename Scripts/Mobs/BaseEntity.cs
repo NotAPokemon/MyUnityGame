@@ -7,6 +7,8 @@ public class BaseEntity : MonoBehaviour
 {
     public float MaxHealth;
     public float health;
+    public float MaxMana;
+    public float mana;
     public float damageAmount;
     public Vector2 chunkLocation;
     public GameObject GroundCheck;
@@ -97,8 +99,8 @@ public class BaseEntity : MonoBehaviour
         if (lastHealth > health)
         {
             HandleDamage(lastHealth - health);
-            lastHealth = health;
         }
+        lastHealth = health;
     }
 
 

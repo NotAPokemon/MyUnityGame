@@ -10,6 +10,8 @@ public class BaseArmor : BaseItem
     public float armorBonus;
     public float damageBonus;
     public float regenBonus;
+    public float manaRegenBonus;
+    public float manaBonus;
     public float durability;
     public bool equiped;
     float cd;

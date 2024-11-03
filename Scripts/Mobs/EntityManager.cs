@@ -10,7 +10,14 @@ public class EntityManager : MonoBehaviour
     public EntitySpawnData[] spawnDatas;
     float lastSpawnTime = 0;
     public Player player;
+    public Material hurtMatPublic;
+    public static Material hurtMat;
 
+
+    private void Start()
+    {
+        hurtMat = hurtMatPublic;
+    }
 
     private void Update()
     {
@@ -95,7 +102,7 @@ public class EntityManager : MonoBehaviour
     public static bool ChanceOf(float chanceDenominator)
     {
 
-        return UnityEngine.Random.value <= (1f / chanceDenominator);
+        return new System.Random().NextDouble() <= (1.0 / chanceDenominator);
     }
 
 }

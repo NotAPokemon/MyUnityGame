@@ -48,6 +48,10 @@ public class Skitter : Mob
         }
     }
 
+    protected override void HandleDamage(float amount)
+    {
+        base.HandleDamage(amount);
+    }
 
     protected override bool isMad()
     {

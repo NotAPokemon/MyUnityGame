@@ -15,13 +15,15 @@ public class Mob : BaseEntity
     protected float yVelocity = 0f;
     public float damageCD;
     protected float timeSinceLastDmg;
-
+    float timeSinceHurt;
+    Material main;
 
 
     protected override void Start()
     {
         base.Start();
         timeSinceLastDmg = 0;
+        main = transform.GetComponentInChildren<MeshRenderer>().material;
     }
 
 
@@ -68,6 +70,14 @@ public class Mob : BaseEntity
         Controller.Move(move * speed * Time.deltaTime);
     }
 
+    protected override void HandleDamage(float amount)
+    {
+        base.HandleDamage(amount);
+        transform.GetComponentInChildren<MeshRenderer>().material = EntityManager.hurtMat;
+        timeSinceHurt = 0;
+
+    }
+
 
     protected bool isFacingTarget()
     {
@@ -107,5 +117,10 @@ public class Mob : BaseEntity
     {
         base.Update();
         timeSinceLastDmg += Time.deltaTime;
+        timeSinceHurt += Time.deltaTime;
+        if (timeSinceHurt >= 0.25)
+        {
+            transform.GetComponentInChildren<MeshRenderer>().material = main;
+        }
     }
 }

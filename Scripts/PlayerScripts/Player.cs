@@ -20,11 +20,15 @@ public class Player : BaseEntity
     private float hiddenMaxHealth;
     private float hiddendamage;
     private float hiddenregen;
+    private float hiddenmana;
+    private float hiddenmanareg;
+
 
 
     public MouseMove mouse;
 
     public float regen;
+    public float manaRegen;
 
     public List<BaseItem> items;
     public List<BaseItem> handItems;
@@ -47,6 +51,8 @@ public class Player : BaseEntity
         hiddendamage = damageAmount;
         lastHealth = health;
         hiddenregen = regen;
+        hiddenmana = MaxMana;
+        hiddenmanareg = manaRegen;
         player = this;
         for (int i = 0; i < 4; i++)
         {
@@ -70,6 +76,10 @@ public class Player : BaseEntity
                 return regen;
             case "DEFENSE":
                 return defense;
+            case "MAX_MANA":
+                return MaxMana;
+            case "MANA_REGENERATION":
+                return manaRegen;
             default: break;
         }
         return -1;
@@ -253,11 +263,10 @@ public class Player : BaseEntity
     public void dropItem()
     {
         handItems[0].transform.SetParent(Manager.transform);
-        handItems[0].transform.position = transform.position + transform.forward * 2;
+        handItems[0].transform.position = transform.position + transform.forward * 3;
         handItems[0].State = ItemState.Ground;
-        handItems.RemoveAt(0);
-        items.RemoveAt(Num);
-        Num = -1;
+        setHeldItem(makeNullItem(), 1);
+        items[Num] = makeNullItem();
     }
 
     void HandleKeyInput()
@@ -283,6 +292,8 @@ public class Player : BaseEntity
         float hp = 0f;
         float dmg = 0f;
         float rg = 0f;
+        float m = 0f;
+        float mrg = 0f;
         for (int i = 0;i < armors.Count;i++)
         {
             def += armors[i].armorBonus;
@@ -290,6 +301,8 @@ public class Player : BaseEntity
             dmg += armors[i].damageBonus;
             rg += armors[i].regenBonus;
         }
+        MaxMana = m + hiddenmana;
+        manaRegen = mrg + hiddenmanareg;
         MaxHealth = hp + hiddenMaxHealth;
         damageAmount = dmg + hiddendamage;
         regen = rg + hiddenregen;
