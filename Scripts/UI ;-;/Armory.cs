@@ -6,6 +6,12 @@ using UnityEngine.UI;
 public class Armory : BaseUI
 {
     List<Image> images = new List<Image>();
+    public static Armory armory;
+
+    void Awake()
+    {
+        armory = this;
+    }
 
     protected override void openUI()
     {

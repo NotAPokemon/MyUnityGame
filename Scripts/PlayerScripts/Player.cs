@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -32,10 +33,10 @@ public class Player : BaseEntity
     public List<BaseItem> handItems;
     public List<BaseArmor> armors;
     public int Num = -1;
+    public static Player player;
 
 
-
-
+ 
 
 
 
@@ -47,6 +48,24 @@ public class Player : BaseEntity
         hiddendamage = damageAmount;
         lastHealth = health;
         hiddenregen = regen;
+        player = this;
+    }
+
+    public float getStat(string name)
+    {
+        switch (name)
+        {
+            case "MAX_HEALTH":
+                return MaxHealth;
+            case "DAMAGE":
+                return damageAmount;
+            case "HEALTH_REGENERATION":
+                return regen;
+            case "DEFENSE":
+                return defense;
+            default: break;
+        }
+        return -1;
     }
 
     public void swapItems(int a, int b)
@@ -197,26 +216,21 @@ public class Player : BaseEntity
         BaseItem[] itemsOnGround = FindObjectOfType<EntityManager>().GetComponentsInChildren<BaseItem>();
         for (int i = 0; i < itemsOnGround.Length; i++)
         {
-            if (itemsOnGround[i] is not NullItem)
+            if (Vector3.Distance(transform.position, itemsOnGround[i].transform.position) <= 2 && itemsOnGround[i] is not NullItem && getItemAmount() < 30)
             {
-                if (Vector3.Distance(transform.position, itemsOnGround[i].transform.position) <= 1)
+                storeItem(itemsOnGround[i]);
+                if (Num == -1)
                 {
-                    if (getItemAmount() < 30)
-                    {
-                        storeItem(itemsOnGround[i]);
-                        if (Num == -1)
-                        {
-                            items.Insert(0, itemsOnGround[i]);
-                            setHeldItem(itemsOnGround[i], 1);
-                            Num = 0;
-                        }
-                        else
-                        {
-                            addItem(itemsOnGround[i]);
-                        }
-                    }
+                    items.Insert(0, itemsOnGround[i]);
+                    setHeldItem(itemsOnGround[i], 1);
+                    Num = 0;
+                }
+                else
+                {
+                    addItem(itemsOnGround[i]);
                 }
             }
+
             
         }
     }
@@ -236,21 +250,15 @@ public class Player : BaseEntity
 
         for (int i = 0; i < Mathf.Min(9, items.Count); i++)
         {
-            if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + (i + 1))))
+            if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + (i + 1))) && i != Num)
             {
-                if (i != Num)
-                {
-                    setHeldItem(items[i], 0);
-                    Num = i;
-                }
+                setHeldItem(items[i], 0);
+                Num = i;
             }
         }
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Q) && Num != -1 && handItems[0] is not NullItem)
         {
-            if (Num != -1 && handItems[0] is not NullItem)
-            {
-                dropItem();
-            }
+            dropItem();
         }
     }
 
