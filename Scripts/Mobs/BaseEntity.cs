@@ -8,14 +8,15 @@ public class BaseEntity : MonoBehaviour
     public float MaxHealth;
     public float health;
     public float damageAmount;
-    public float damageCD;
-    protected float timeSinceLastDmg;
     public Vector2 chunkLocation;
     public GameObject GroundCheck;
     public float groundDistance = 0.2f;
     public LayerMask ground;
     public CharacterController Controller;
     public LootData[] drops;
+    protected float defense;
+
+    protected float lastHealth;
 
     bool DeathCanceld = false;
 
@@ -24,7 +25,6 @@ public class BaseEntity : MonoBehaviour
     protected virtual void Start()
     {
         Controller = transform.GetComponent<CharacterController>();
-        timeSinceLastDmg = 0;
         health = MaxHealth;
     }
     protected bool isGrounded()
@@ -32,18 +32,7 @@ public class BaseEntity : MonoBehaviour
         return Physics.CheckSphere(GroundCheck.transform.position, groundDistance, ground);
     }
 
-    public float damage()
-    {
-        if(timeSinceLastDmg >= damageCD)
-        {
-            timeSinceLastDmg = 0;
-            return damageAmount;
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    
 
     public void cancelDeath()
     {
@@ -83,9 +72,16 @@ public class BaseEntity : MonoBehaviour
         
     }
 
+    protected virtual void HandleDamage(float amount)
+    {
+        health += amount * (Mathf.Exp(-((defense * Mathf.Log10(100)) / (100000))));
+        health = Mathf.Clamp(health, 0f, MaxHealth);
+    }
+
+
+
     protected virtual void Update()
     {
-        timeSinceLastDmg += Time.deltaTime;
         if (transform.position.y < -200)
         {
             Destroy(gameObject);
@@ -97,6 +93,11 @@ public class BaseEntity : MonoBehaviour
         if (dead)
         {
             handleDeath();
+        }
+        if (lastHealth > health)
+        {
+            HandleDamage(lastHealth - health);
+            lastHealth = health;
         }
     }
 

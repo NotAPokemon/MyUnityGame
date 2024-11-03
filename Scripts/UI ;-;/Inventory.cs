@@ -61,7 +61,6 @@ public class Inventory : BaseUI
             Sprite clickedSprite;
             try
             {
-                player.items[LastClicked].GetType();
                 lastSprite = LastImage.sprite;
                 if (player.items[LastClicked] is NullItem)
                 {
@@ -74,7 +73,6 @@ public class Inventory : BaseUI
             }
             try
             {
-                player.items[selected].GetType();
                 clickedSprite = Clicked.sprite;
                 if (player.items[selected] is NullItem)
                 {

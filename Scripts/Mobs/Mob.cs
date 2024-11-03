@@ -13,9 +13,30 @@ public class Mob : BaseEntity
     Vector3 move;
     protected float gravity = 9.81f * 2;
     protected float yVelocity = 0f;
+    public float damageCD;
+    protected float timeSinceLastDmg;
 
 
 
+    protected override void Start()
+    {
+        base.Start();
+        timeSinceLastDmg = 0;
+    }
+
+
+    public float damage()
+    {
+        if (timeSinceLastDmg >= damageCD)
+        {
+            timeSinceLastDmg = 0;
+            return damageAmount;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
     protected void HandleJump()
     {
@@ -80,5 +101,6 @@ public class Mob : BaseEntity
     protected override void Update() 
     {
         base.Update();
+        timeSinceLastDmg += Time.deltaTime;
     }
 }

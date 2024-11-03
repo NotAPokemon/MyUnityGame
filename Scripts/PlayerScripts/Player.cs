@@ -21,9 +21,6 @@ public class Player : BaseEntity
     private float hiddendamage;
     private float hiddenregen;
 
-    float defense;
-
-    private float lastHealth;
 
     public MouseMove mouse;
 
@@ -49,6 +46,14 @@ public class Player : BaseEntity
         lastHealth = health;
         hiddenregen = regen;
         player = this;
+        for (int i = 0; i < 4; i++)
+        {
+            armors.Add(makeNullItem());
+        }
+        for (int i = 0; i < 30 - getItemAmount(); i++)
+        {
+            items.Add(makeNullItem());
+        }
     }
 
     public float getStat(string name)
@@ -270,7 +275,7 @@ public class Player : BaseEntity
         }
     }
 
-    void HandleBouns()
+    public void HandleBouns()
     {
         float def = 0f;
         float hp = 0f;
@@ -295,11 +300,7 @@ public class Player : BaseEntity
         health = Mathf.Clamp(health, 0f, MaxHealth);
     }
 
-    void HandleDef(float amount)
-    {
-        health += amount * (Mathf.Exp(-((defense * Mathf.Log10(100))/(100000))));
-        health = Mathf.Clamp(health, 0f, MaxHealth);
-    }
+    
 
 
     protected override void Update()
@@ -309,11 +310,6 @@ public class Player : BaseEntity
         HandleMovement();
         HandlePickup();
         HandleKeyInput();
-        if (lastHealth > health)
-        {
-            HandleDef(lastHealth - health);
-            lastHealth = health;
-        }
         HandleRegen();
         HandleBouns();
     }

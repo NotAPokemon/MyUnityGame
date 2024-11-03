@@ -10,6 +10,7 @@ public class StatPanel : MonoBehaviour
 {
     public List<Stat> stats;
     public GameObject statPrefab;
+    public static StatPanel self;
     bool made = false;
 
     private void make()
@@ -24,7 +25,12 @@ public class StatPanel : MonoBehaviour
         }
     }
 
-    void updateStats()
+    private void Start()
+    {
+        self = this;
+    }
+
+    public void updateStats()
     {
         if (!made)
         {
@@ -45,6 +51,7 @@ public class StatPanel : MonoBehaviour
 
     public void Update()
     {
+        Player.player.HandleBouns();
         for (int i = 0; i < stats.Count; i++)
         {
             stats[i].amount = Player.player.getStat(stats[i].name);
