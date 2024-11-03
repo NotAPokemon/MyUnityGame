@@ -55,7 +55,7 @@ public class BaseEntity : MonoBehaviour
                     if (EntityManager.ChanceOf(drops[i].dropRate))
                     {
                         GameObject item = Instantiate(drops[i].item.transform.gameObject);
-                        item.transform.position = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
+                        item.transform.position = new Vector3(transform.position.x + UnityEngine.Random.Range(-2, 2), transform.position.y + 1, transform.position.z + UnityEngine.Random.Range(-2,2));
 
                         item.GetComponent<BaseItem>().State = ItemState.Ground;
                         item.transform.SetParent(FindObjectOfType<EntityManager>().transform);
