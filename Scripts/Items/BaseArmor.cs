@@ -12,11 +12,20 @@ public class BaseArmor : BaseItem
     public float regenBonus;
     public float durability;
     public bool equiped;
+    float cd;
 
     protected override void rightClick()
     {
-        player.swarpArmor( (int) type , player.Num);
-        equiped = true;
+        if (cd >= 1)
+        {
+            player.swarpArmor((int)type, player.Num);
+            equiped = true;
+            cd = 0;
+        } else
+        {
+            cd += Time.deltaTime;
+        }
+        
     }
 }
 
