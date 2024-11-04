@@ -41,11 +41,8 @@ public class StatPanel : MonoBehaviour
             Transform temp = transform.GetChild(i);
             temp.GetChild(0).GetComponent<Image>().sprite = stats[i].icon;
             TextMeshProUGUI name = temp.GetChild(1).GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI amount = temp.GetChild(2).GetComponent<TextMeshProUGUI>();
             name.color = new Color(stats[i].color.r, stats[i].color.g, stats[i].color.b);
-            amount.color = new Color(stats[i].color.r, stats[i].color.g, stats[i].color.b);
-            name.SetText(stats[i].displayName);
-            amount.SetText(stats[i].amount.ToString());
+            name.SetText(stats[i].displayName + ":  " + stats[i].amount.ToString());
         }
     }
 
