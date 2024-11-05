@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class S : ModiferCommand
+public class P : ModiferCommand
 {
-    public S(string[] args) : base(args)
+    public P(string[] args) : base(args)
     {
         this.args = args;
         structured = false;
@@ -12,7 +12,7 @@ public class S : ModiferCommand
         manaCost = (vector.x + vector.y + vector.z) / 10;
     }
 
-    public S(string[] args, BaseCommand child) : base(args, child)
+    public P(string[] args, BaseCommand child) : base(args, child)
     {
         this.args = args;
         this.child = child;
@@ -21,15 +21,16 @@ public class S : ModiferCommand
 
     protected override void apply(Vector3 modifyAmount)
     {
-        parent.self.transform.localScale = modifyAmount;
-        self = new GameObject("S");
+        parent.self.transform.localPosition = modifyAmount;
+        self = new GameObject("P");
         self.transform.parent = parent.self.transform;
         self.transform.localPosition = Vector3.zero;
+        self.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        self.transform.localScale = Vector3.one;
     }
 
     public override void run()
     {
         applyToParent(argsToVector());
     }
-
 }

@@ -23,7 +23,22 @@ public class AOC : BaseCommand
     {
         Vector3 pos = argsToVector();
         self = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        self.transform.parent = parent != null ? parent.self.transform : MagicReader.spellParent.transform;
+        if (parent != null)
+        {
+            try
+            {
+                self.transform.parent = parent.self.transform;
+            }
+            catch
+            {
+                self.transform.parent = MagicReader.spellParent.transform;
+            }
+
+        }
+        else
+        {
+            self.transform.parent = MagicReader.spellParent.transform;
+        }
         self.transform.localPosition = pos;
     }
 

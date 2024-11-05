@@ -13,6 +13,8 @@ public class SpellMaker : BaseUI
     float timeSinceError = 1;
 
     bool scalingItem;
+    bool positioningItem;
+    float posZvalue = 0;
 
     TextMeshProUGUI textInput;
 
@@ -70,6 +72,24 @@ public class SpellMaker : BaseUI
         }
     }
 
+    void handlePositioning()
+    {
+        Vector2 cursorPos = Input.mousePosition;
+
+        lastMadeObject.transform.localPosition = new Vector2(cursorPos.x - 10, cursorPos.y - 10);
+
+        posZvalue += Input.GetAxis("Mouse ScrollWheel");
+
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            positioningItem = false;
+            commands += cursorPos.x + "," + cursorPos.y + "," + posZvalue + "}];";
+            posZvalue = 0;
+        }
+
+    }
+
 
     protected override void openUI()
     {
@@ -101,6 +121,11 @@ public class SpellMaker : BaseUI
         if (scalingItem)
         {
             handleScaling();
+            return;
+        } else if (positioningItem)
+        {
+            Debug.Log("?");
+            handlePositioning();
             return;
         }
         if (path != null)
@@ -135,6 +160,13 @@ public class SpellMaker : BaseUI
                 {
                     commands += "[S{";
                     scalingItem = true;
+                }
+            } else if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (lastMadeObject != null)
+                {
+                    commands += "[P{";
+                    positioningItem = true;
                 }
             }
         }
