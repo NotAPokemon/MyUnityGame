@@ -72,6 +72,10 @@ public class Player : BaseEntity
             case "MAX_HEALTH":
                 return MaxHealth;
             case "DAMAGE":
+                if (handItems.Count < 1)
+                {
+                    return damageAmount;
+                }
                 return damageAmount + handItems[0].damage;
             case "HEALTH_REGENERATION":
                 return regen;
@@ -317,10 +321,12 @@ public class Player : BaseEntity
         if (timeFromLastReg >= 1)
         {
             health += regen;
+            mana += manaRegen;
             timeFromLastReg = 0f;
         }
         timeFromLastReg += Time.deltaTime;
         health = Mathf.Clamp(health, 0f, MaxHealth);
+        mana = Mathf.Clamp(mana, 0f, MaxMana);
     }
 
     

@@ -14,7 +14,7 @@ public class HealthBar : MonoBehaviour
         {
             float percent = Player.player.health / Player.player.MaxHealth;
             transform.GetChild(0).localScale = new Vector3(percent, 1, 1);
-            transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(Player.player.health.ToString() + "/" + Player.player.MaxHealth.ToString());
+            transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(((int)Player.player.health).ToString() + "/" + Player.player.MaxHealth.ToString());
         } catch { }
        
     }

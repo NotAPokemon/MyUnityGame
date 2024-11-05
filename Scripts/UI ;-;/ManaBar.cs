@@ -11,7 +11,7 @@ public class ManaBar : MonoBehaviour
         {
             float percent = Player.player.mana / Player.player.MaxMana;
             transform.GetChild(0).localScale = new Vector3(percent, 1, 1);
-            transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(Player.player.mana.ToString() + "/" + Player.player.MaxMana.ToString());
+            transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText( ((int) Player.player.mana).ToString() + "/" + Player.player.MaxMana.ToString());
         } catch { }
         
     }

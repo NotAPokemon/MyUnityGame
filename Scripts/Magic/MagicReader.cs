@@ -9,10 +9,13 @@ public class MagicReader : MonoBehaviour
 
     public static List<Action<MagicTokenizer>> callbacks = new List<Action<MagicTokenizer>>();
     public static List<MagicTokenizer> arg = new List<MagicTokenizer>();
+    public GameObject activeSpellParent;
+    public static GameObject spellParent;
+    public SetMagicKeys pathWrapper;
 
     public void Start()
     {
-        requestCommands("assets/magic/test.magic",test);
+        spellParent = activeSpellParent;
     }
     public static void requestCommands(string filePath, Action<MagicTokenizer> callback)
     {
@@ -32,9 +35,9 @@ public class MagicReader : MonoBehaviour
         arg.Add(test);
     }
 
-    void test(MagicTokenizer commandWrapper)
+    void runOnComplete(MagicTokenizer commandWrapper)
     {
-        Player.player.health -= 1;
+        commandWrapper.runAll();
     }
 
     public void Update()
@@ -44,6 +47,22 @@ public class MagicReader : MonoBehaviour
             callbacks[0].Invoke(arg[0]);
             arg.RemoveAt(0);
             callbacks.RemoveAt(0);
+        }
+        if (!UIManager.UIOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                requestCommands(pathWrapper.paths[0], runOnComplete);
+            } else if (Input.GetKeyDown(KeyCode.G))
+            {
+                requestCommands(pathWrapper.paths[1], runOnComplete);
+            } else if (Input.GetKeyDown(KeyCode.H))
+            {
+                requestCommands(pathWrapper.paths[2], runOnComplete);
+            } else if (Input.GetKeyDown(KeyCode.J))
+            {
+                requestCommands(pathWrapper.paths[3], runOnComplete);
+            }
         }
     }
 }

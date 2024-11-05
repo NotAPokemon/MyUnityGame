@@ -32,6 +32,10 @@ public class BaseUI : MonoBehaviour
             if (!UIManager.UIOpen || UIManager.ui.Equals(this)) 
             {
                 openUI();
+                if (isOpen)
+                {
+                    isOpen = onExit();
+                }
                 toggleOn();
             }
         }
@@ -40,6 +44,11 @@ public class BaseUI : MonoBehaviour
     protected virtual void ifChanged()
     {
 
+    }
+
+    protected virtual bool onExit()
+    {
+        return true;
     }
 
     // Update is called once per frame

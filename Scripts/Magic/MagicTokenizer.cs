@@ -93,12 +93,9 @@ public class MagicTokenizer
         List<Line> lines = new List<Line>();
         for (int i = 0; i < split.Length; i++)
         {
-            lines.Add(new Line(split[i]));
-            lines.Add(new Line("[E{}]"));
+            lines.Add(new Line(split[i].Trim()));
         }
 
-
-        lines.RemoveAt(lines.Count - 1);
         lines[lines.Count - 1] = new Line("EOF");
 
         List<string> tokens = tokenize(lines);
@@ -112,12 +109,32 @@ public class MagicTokenizer
     public void structure()
     {
         structuredCommands = commands[0];
+        for (int i = 1; i < commands.Count; i++)
+        {
+            commands[i].parent = commands[i - 1];
+        }
         for (int i = 0;i < commands.Count - 1;i++)
         {
             structuredCommands.getChild(i).setChild(commands[i + 1]);
         }
+        
     }
 
+
+    public void runAll()
+    {
+        float totalCost = 0;
+        for (int i = 0; i < commands.Count; i++)
+        {
+            if (Player.player.mana >= commands[i].manaCost)
+            {
+                commands[i].run();
+                Player.player.mana -= commands[i].manaCost;
+                totalCost += commands[i].manaCost;
+            }
+        }
+        commands[0].self.GetComponent<DestroyOnDone>().sustain(totalCost / 10f);
+    }
 
     public List<string> tokenize(List<Line> list)
     {
@@ -129,7 +146,7 @@ public class MagicTokenizer
             {
                 char t = list[i].next();
                 result.Add("");
-                while(t != ']')
+                while (t != ']')
                 {
                     result[result.Count - 1] += t;
                     try
@@ -146,7 +163,6 @@ public class MagicTokenizer
                         {
                             nextItem = ' ';
                         }
-                        break;
                     }
                 }
             }
