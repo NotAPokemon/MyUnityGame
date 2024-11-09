@@ -113,15 +113,15 @@ public class MagicTokenizer
         {
             commands[i].parent = commands[i - 1];
         }
-        for (int i = 0;i < commands.Count - 1;i++)
+        for (int i = 1;i < commands.Count - 1;i++)
         {
-            structuredCommands.getChild(i).setChild(commands[i + 1]);
+            commands[i - 1].setChild(commands[i]);
         }
         
     }
 
 
-    public void runAll()
+    public GameObject runAll()
     {
         float totalCost = 0;
         for (int i = 0; i < commands.Count; i++)
@@ -134,6 +134,7 @@ public class MagicTokenizer
             }
         }
         commands[0].self.GetComponent<DestroyOnDone>().sustain(totalCost / 10f);
+        return commands[0].self;
     }
 
     public List<string> tokenize(List<Line> list)

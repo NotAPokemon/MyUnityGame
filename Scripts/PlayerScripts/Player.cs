@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Player : BaseEntity
@@ -85,6 +83,8 @@ public class Player : BaseEntity
                 return MaxMana;
             case "MANA_REGENERATION":
                 return manaRegen;
+            case "SPEED":
+                return speed;
             default: break;
         }
         return -1;
@@ -318,7 +318,7 @@ public class Player : BaseEntity
 
     void HandleRegen()
     {
-        if (timeFromLastReg >= 1)
+        if (timeFromLastReg >= 2)
         {
             health += regen;
             mana += manaRegen;

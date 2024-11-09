@@ -19,6 +19,7 @@ public class BaseEntity : MonoBehaviour
     protected float defense;
 
     protected float lastHealth;
+    protected float lastMana;
 
     bool DeathCanceld = false;
 
@@ -80,6 +81,11 @@ public class BaseEntity : MonoBehaviour
         health = Mathf.Clamp(health, 0f, MaxHealth);
     }
 
+    protected virtual void HandleMana(float amount)
+    {
+
+    }
+
 
 
     protected virtual void Update()
@@ -101,6 +107,11 @@ public class BaseEntity : MonoBehaviour
             HandleDamage(lastHealth - health);
         }
         lastHealth = health;
+        if (lastMana > mana)
+        {
+            HandleMana(lastMana-mana);
+        }
+        lastMana = mana;
     }
 
 

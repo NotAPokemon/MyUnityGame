@@ -65,10 +65,18 @@ public class SpellMaker : BaseUI
 
         lastMadeObject.transform.localScale = new Vector3(distance, distance, 1);
 
+        posZvalue += Input.GetAxis("Mouse ScrollWheel");
+
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             scalingItem = false;
-            commands += distance + "," + distance + "," + distance + "}];";
+            if (posZvalue == 0)
+            {
+                posZvalue = 1;
+            }
+            commands += distance + "," + distance + "," + posZvalue + "}];";
+            posZvalue = 0;
         }
     }
 
@@ -76,7 +84,7 @@ public class SpellMaker : BaseUI
     {
         Vector2 cursorPos = Input.mousePosition;
 
-        lastMadeObject.transform.localPosition = new Vector2(cursorPos.x - 10, cursorPos.y - 10);
+        lastMadeObject.transform.position = new Vector2(cursorPos.x, cursorPos.y);
 
         posZvalue += Input.GetAxis("Mouse ScrollWheel");
 

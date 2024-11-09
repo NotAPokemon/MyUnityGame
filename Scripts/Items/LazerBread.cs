@@ -27,6 +27,8 @@ public class LazerBread : BaseItem
             lineRenderer.enabled = true;
             lineTime = 0;
 
+            Player.player.mana -= 20;
+
             lineRenderer.SetPosition(0, ray.origin + new Vector3(0, 0, 0.1f));
             if (Physics.SphereCast(ray, 3, out hit))
             {

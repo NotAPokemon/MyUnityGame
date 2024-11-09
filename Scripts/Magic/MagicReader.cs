@@ -37,7 +37,8 @@ public class MagicReader : MonoBehaviour
 
     void runOnComplete(MagicTokenizer commandWrapper)
     {
-        commandWrapper.runAll();
+        GameObject result =  commandWrapper.runAll();
+        result.transform.SetParent(transform);
     }
 
     public void Update()
