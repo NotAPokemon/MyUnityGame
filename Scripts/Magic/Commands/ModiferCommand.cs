@@ -24,7 +24,7 @@ public class ModiferCommand : BaseCommand
 
     }
 
-    public void applyToParent(Vector3 modifyAmount)
+    public virtual void applyToParent(Vector3 modifyAmount)
     {
         if (parent != null)
         {

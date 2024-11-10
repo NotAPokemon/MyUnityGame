@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AOC : BaseCommand
+public class AOC : ObjectCommand
 {
 
     public AOC(string[] args) : base(args)
@@ -21,6 +21,7 @@ public class AOC : BaseCommand
 
     public override void run()
     {
+        base.run();
         Vector3 pos = argsToVector();
         self = GameObject.CreatePrimitive(PrimitiveType.Cube);
         if (parent != null)
