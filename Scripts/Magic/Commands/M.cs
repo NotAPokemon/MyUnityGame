@@ -38,31 +38,60 @@ public class M : ModiferCommand
         return new Vector4(color.x, color.y, color.z, argsToVector(9).x);
     }
 
-    protected override void apply(Vector3 modifyAmount)
+
+
+    Material argsToMat()
     {
         Material mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         mat.color = baseColor;
         mat.SetFloat("_Smoothness", TextureMetalicSmoothness.y);
         mat.SetFloat("_Metallic", TextureMetalicSmoothness.x);
         mat.SetColor("_EmissionColor", Emmission);
+        return mat;
+    }
+
+    protected override void apply(Vector3 modifyAmount)
+    {
+        Material mat = argsToMat();
         ((ObjectCommand) parent).MeshRenderer.material = mat;
         self = new GameObject("M");
         self.transform.parent = parent.self.transform;
         self.transform.localPosition = Vector3.zero;
     }
 
+    void applyToCommand(ObjectCommand command)
+    {
+        Material mat = argsToMat();
+        command.MeshRenderer.material = mat;
+        self = new GameObject("M");
+        self.transform.parent = command.self.transform;
+        self.transform.localPosition = Vector3.zero;
+    }
+     
     public override void applyToParent(Vector3 modifyAmount)
     {
         if (parent != null)
         {
             if (parent is not ObjectCommand)
             {
-                try
+                BaseCommand nextParent = parent.parent;
+                while (nextParent is not ObjectCommand)
                 {
-                    ((ModiferCommand)parent).applyToParent(modifyAmount);
-                } catch
+                    try
+                    {
+                        nextParent = nextParent.parent;
+                    } catch
+                    {
+                        break;
+                    }
+                    if (nextParent == null)
+                    {
+                        break;
+                    }
+                }
+                if (nextParent is ObjectCommand)
                 {
-                    ((ModiferCommand)parent.parent).applyToParent(modifyAmount);
+                    applyToCommand((ObjectCommand)nextParent);
                 }
             }
             else
@@ -70,6 +99,11 @@ public class M : ModiferCommand
                 apply(modifyAmount);
             }
         }
+    }
+
+    public override void run()
+    {
+        applyToParent(argsToVector());
     }
 
 }

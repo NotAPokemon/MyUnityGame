@@ -18,6 +18,7 @@ public class SpellMaker : BaseUI
     bool positioningItem;
     bool rotatingItem;
     bool materialSelecting;
+    static bool materialArived = false;
     float posZvalue = 0;
 
     TextMeshProUGUI textInput;
@@ -28,6 +29,10 @@ public class SpellMaker : BaseUI
     public GameObject errorObject;
 
     TextMeshProUGUI error;
+
+    public GameObject materialMakerPrefab;
+
+    GameObject materialMaker;
 
     private void Start()
     {
@@ -72,8 +77,12 @@ public class SpellMaker : BaseUI
         float distance = Vector3.Distance(transform.position, cursorPos);
 
         lastMadeObject.transform.localScale = new Vector3(distance, distance, 1);
+        if (lastMadeObject.name == "BC")
+        {
+            lastMadeObject.transform.localScale = new Vector3(distance * 2, distance, 1);
+        }
 
-        posZvalue += Input.GetAxis("Mouse ScrollWheel");
+        posZvalue += Input.GetAxis("Mouse ScrollWheel") * 100;
 
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -94,13 +103,13 @@ public class SpellMaker : BaseUI
 
         lastMadeObject.transform.position = new Vector2(cursorPos.x, cursorPos.y);
 
-        posZvalue += Input.GetAxis("Mouse ScrollWheel");
+        posZvalue += Input.GetAxis("Mouse ScrollWheel") * 100;
 
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             positioningItem = false;
-            commands += cursorPos.x + "," + cursorPos.y + "," + posZvalue + "}];";
+            commands += cursorPos.x / 50 + "," + cursorPos.y/ 100 + "," + posZvalue + "}];";
             posZvalue = 0;
         }
 
@@ -108,12 +117,12 @@ public class SpellMaker : BaseUI
 
     void handleRotation()
     {
-        float MouseHorizontal = Input.GetAxis("Mouse X");
-        float MouseVertical = Input.GetAxis("Mouse Y");
+        float MouseHorizontal = Input.mousePosition.x;
+        float MouseVertical = Input.mousePosition.y;
 
-        lastMadeObject.transform.localRotation = Quaternion.Euler(lastMadeObject.transform.localRotation.x + MouseVertical, lastMadeObject.transform.localRotation.y + MouseHorizontal, 0);
+        posZvalue += Input.GetAxis("Mouse ScrollWheel") * 50;
 
-        posZvalue += Input.GetAxis("Mouse ScrollWheel");
+        lastMadeObject.transform.localRotation = Quaternion.Euler(lastMadeObject.transform.localRotation.x + MouseVertical, lastMadeObject.transform.localRotation.y + MouseHorizontal, posZvalue);
 
         if ( Input.GetKeyDown(KeyCode.Mouse0)) 
         {
@@ -123,21 +132,42 @@ public class SpellMaker : BaseUI
         }
     }
 
+
+    public static void dropMaterial()
+    {
+        materialArived = true;
+    }
+
     void handleMaterialSelection()
     {
-        
+        if (materialArived)
+        {
+            Color baseColor = materialMaker.transform.GetChild(0).GetChild(4).GetComponent<Image>().color;
+            Color emmisonColor = materialMaker.transform.GetChild(1).GetChild(4).GetComponent<Image>().color;
+            float metallic = materialMaker.transform.GetChild(2).GetChild(0).GetComponent<Slider>().value;
+            float smooth = materialMaker.transform.GetChild(3).GetChild(0).GetComponent<Slider>().value;
+            materialMaker.SetActive(false);
+            materialSelecting = false;
+            commands += baseColor.r + "," + baseColor.g + "," + baseColor.b + "," + baseColor.a + "," + metallic + "," + smooth + "," + emmisonColor.r + "," + emmisonColor.g + "," + emmisonColor.b + "," + emmisonColor.a + "}];";
+            materialArived = false;
+        }
     }
 
 
     protected override void openUI()
     {
-        path = null;
-        lastMadeObject = null;
-        Destroy(component.transform.GetChild(1).gameObject);
-        GameObject newDisplay = new GameObject("Display");
-        newDisplay.transform.SetParent(component.transform);
-        newDisplay.transform.localScale = new Vector3(2, 1, 1);
-        newDisplay.transform.localPosition = Vector3.zero;
+        if (!UIManager.UIOpen)
+        {
+            path = null;
+            lastMadeObject = null;
+            Destroy(component.transform.GetChild(1).gameObject);
+            GameObject newDisplay = new GameObject("Display");
+            newDisplay.transform.SetParent(component.transform);
+            newDisplay.transform.localScale = Vector3.one;
+            newDisplay.transform.localPosition = Vector3.zero;
+            Destroy(component.transform.GetChild(1).gameObject);
+            materialMaker = Instantiate(materialMakerPrefab, component.transform);
+        }
     }
 
     void HandleKeyBinds()
@@ -164,6 +194,14 @@ public class SpellMaker : BaseUI
                 temp.transform.SetParent(component.transform.GetChild(1));
                 temp.transform.localPosition = Vector3.zero;
                 lastMadeObject = temp;
+            } else if (Input.GetKeyDown(KeyCode.S))
+            {
+                commands += "[AOS{0,0,0}];";
+                GameObject temp = new GameObject("AOS");
+                temp.AddComponent<Image>().sprite = UIMagicHandler.AOS;
+                temp.transform.SetParent (component.transform.GetChild(1));
+                temp.transform.localPosition = Vector3.zero;
+                lastMadeObject = temp;
             }
         }
         else if (Input.GetKeyDown(KeyCode.S) && lastMadeObject != null)
@@ -185,6 +223,7 @@ public class SpellMaker : BaseUI
             rotatingItem = true;
         } else if (Input.GetKeyDown(KeyCode.M) && lastMadeObject != null)
         {
+            materialMaker.SetActive(true);
             commands += "[M{";
             materialSelecting = true;
         }
@@ -227,17 +266,17 @@ public class SpellMaker : BaseUI
             error.gameObject.SetActive(false);
         }
 
+        if (earlyReturn())
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
         {
             isOpen = onExit();
             toggleOn();
         }
 
-        if (earlyReturn())
-        {
-            return;
-        }
-        
         if (path != null)
         {
             HandleKeyBinds();

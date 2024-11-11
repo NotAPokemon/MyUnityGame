@@ -288,6 +288,12 @@ public class Player : BaseEntity
         if (Input.GetKey(KeyCode.Q) && Num != -1 && handItems[0] is not NullItem)
         {
             dropItem();
+        } else if (Input.GetKeyDown(KeyCode.X))
+        {
+            try
+            {
+                Destroy(FindObjectOfType<MagicReader>().transform.GetChild(0).gameObject);
+            } catch { }
         }
     }
 
@@ -299,6 +305,7 @@ public class Player : BaseEntity
         float rg = 0f;
         float m = 0f;
         float mrg = 0f;
+        float s = 0f;
         for (int i = 0;i < armors.Count;i++)
         {
             def += armors[i].armorBonus;
@@ -307,6 +314,7 @@ public class Player : BaseEntity
             rg += armors[i].regenBonus;
             m += armors[i].manaBonus;
             mrg += armors[i].manaRegenBonus;
+            s += armors[i].speedBonus;
         }
         MaxMana = m + hiddenmana;
         manaRegen = mrg + hiddenmanareg;
@@ -314,6 +322,7 @@ public class Player : BaseEntity
         damageAmount = dmg + hiddendamage;
         regen = rg + hiddenregen;
         defense = def;
+        speed = s + hiddenspeed;
     }
 
     void HandleRegen()

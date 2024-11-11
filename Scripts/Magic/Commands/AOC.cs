@@ -21,9 +21,9 @@ public class AOC : ObjectCommand
 
     public override void run()
     {
-        base.run();
         Vector3 pos = argsToVector();
         self = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        self.layer = 3;
         if (parent != null)
         {
             try
@@ -41,6 +41,7 @@ public class AOC : ObjectCommand
             self.transform.parent = MagicReader.spellParent.transform;
         }
         self.transform.localPosition = pos;
+        base.run();
     }
 
 

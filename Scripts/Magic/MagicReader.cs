@@ -49,7 +49,7 @@ public class MagicReader : MonoBehaviour
             arg.RemoveAt(0);
             callbacks.RemoveAt(0);
         }
-        if (!UIManager.UIOpen)
+        if (!UIManager.UIOpen && pathWrapper.paths.Count > 0)
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
