@@ -170,38 +170,38 @@ public class SpellMaker : BaseUI
         }
     }
 
+
+
+    void makeObject(string name, Sprite sprite)
+    {
+        commands += "[ "+name+"{0,0,0}];";
+        GameObject temp = new GameObject(name);
+        temp.AddComponent<Image>().sprite = sprite;
+        temp.transform.SetParent(component.transform.GetChild(1));
+        temp.transform.localPosition = Vector3.zero;
+        lastMadeObject = temp;
+    }
+
     void HandleKeyBinds()
     {
         if (Input.GetKey(KeyCode.B))
         {
             if (Input.GetKeyDown(KeyCode.C))
             {
-                commands += "[BC{0,0,0}];";
-                GameObject temp = new GameObject("BC");
-                temp.AddComponent<Image>().sprite = UIMagicHandler.BC;
-                temp.transform.SetParent(component.transform.GetChild(1));
-                temp.transform.localPosition = Vector3.zero;
-                lastMadeObject = temp;
+                makeObject("BC", UIMagicHandler.BC);
             }
         }
         else if (Input.GetKey(KeyCode.A))
         {
             if (Input.GetKeyDown(KeyCode.C))
             {
-                commands += "[AOC{0,0,0}];";
-                GameObject temp = new GameObject("AOC");
-                temp.AddComponent<Image>().sprite = UIMagicHandler.AOC;
-                temp.transform.SetParent(component.transform.GetChild(1));
-                temp.transform.localPosition = Vector3.zero;
-                lastMadeObject = temp;
+                makeObject("AOC", UIMagicHandler.AOC);
             } else if (Input.GetKeyDown(KeyCode.S))
             {
-                commands += "[AOS{0,0,0}];";
-                GameObject temp = new GameObject("AOS");
-                temp.AddComponent<Image>().sprite = UIMagicHandler.AOS;
-                temp.transform.SetParent (component.transform.GetChild(1));
-                temp.transform.localPosition = Vector3.zero;
-                lastMadeObject = temp;
+                makeObject("AOS", UIMagicHandler.AOS);
+            } else if (Input.GetKeyDown(KeyCode.B))
+            {
+                makeObject("AOB", UIMagicHandler.AOB);
             }
         }
         else if (Input.GetKeyDown(KeyCode.S) && lastMadeObject != null)
