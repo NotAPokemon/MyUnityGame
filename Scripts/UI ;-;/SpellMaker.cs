@@ -1,8 +1,6 @@
 using System.IO;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
 
 public class SpellMaker : BaseUI
@@ -174,7 +172,7 @@ public class SpellMaker : BaseUI
 
     void makeObject(string name, Sprite sprite)
     {
-        commands += "[ "+name+"{0,0,0}];";
+        commands += "["+name+"{0,0,0}];";
         GameObject temp = new GameObject(name);
         temp.AddComponent<Image>().sprite = sprite;
         temp.transform.SetParent(component.transform.GetChild(1));

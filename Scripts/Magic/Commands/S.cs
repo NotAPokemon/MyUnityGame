@@ -21,10 +21,18 @@ public class S : ModiferCommand
 
     protected override void apply(Vector3 modifyAmount)
     {
-        parent.self.transform.localScale = modifyAmount;
-        self = new GameObject("S");
-        self.transform.parent = parent.self.transform;
-        self.transform.localPosition = Vector3.zero;
+        try
+        {
+            parent.self.transform.localScale = modifyAmount;
+            self = new GameObject("S");
+            self.transform.parent = parent.self.transform;
+            self.transform.localPosition = Vector3.zero;
+        }
+        catch
+        {
+
+        }
+        
     }
 
     public override void run()

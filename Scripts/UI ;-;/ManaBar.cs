@@ -7,12 +7,13 @@ public class ManaBar : MonoBehaviour
 {
     void Update()
     {
+        Transform main = transform.GetChild(0);
         try
         {
             float percent = Player.player.mana / Player.player.MaxMana;
-            transform.GetChild(0).localScale = new Vector3(percent, 1, 1);
-            transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText( ((int) Player.player.mana).ToString() + "/" + Player.player.MaxMana.ToString());
+            main.GetChild(0).localScale = new Vector3(percent, 1, 1);
+            main.GetChild(1).GetComponent<TextMeshProUGUI>().SetText( ((int) Player.player.mana).ToString() + "/" + Player.player.MaxMana.ToString());
         } catch { }
-        
+        main.gameObject.SetActive(!UIManager.UIOpen);
     }
 }

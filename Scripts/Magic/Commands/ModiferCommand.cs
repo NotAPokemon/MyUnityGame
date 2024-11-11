@@ -30,7 +30,26 @@ public class ModiferCommand : BaseCommand
         {
             if (parent is ModiferCommand)
             {
-                ((ModiferCommand) parent).applyToParent(modifyAmount);
+                BaseCommand nextParent = parent.parent;
+                while (nextParent is ModiferCommand)
+                {
+                    try
+                    {
+                        nextParent = nextParent.parent;
+                    }
+                    catch
+                    {
+                        break;
+                    }
+                    if (nextParent == null)
+                    {
+                        break;
+                    }
+                }
+                if (nextParent is not ModiferCommand)
+                {
+                    ((ModiferCommand)nextParent.child).apply(modifyAmount);
+                }
             } else
             {
                 apply(modifyAmount);

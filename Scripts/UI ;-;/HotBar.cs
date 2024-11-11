@@ -21,5 +21,8 @@ public class HotBar : MonoBehaviour
             image.sprite = Player.player.items[i].icon;
             image.enabled = Player.player.items[i] is not NullItem;
         }
+
+        main.gameObject.SetActive(!UIManager.UIOpen);
+
     }
 }
