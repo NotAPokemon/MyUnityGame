@@ -19,7 +19,7 @@ public class LazerBread : BaseItem
 
     protected override void rightClick()
     {
-        if (lineTime >= 0.5f)
+        if (lineTime >= 0.5f && Player.player.mana >= 10)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -27,7 +27,7 @@ public class LazerBread : BaseItem
             lineRenderer.enabled = true;
             lineTime = 0;
 
-            Player.player.mana -= 20;
+            Player.player.mana -= 10;
 
             lineRenderer.SetPosition(0, ray.origin + new Vector3(0, 0, 0.1f));
             if (Physics.SphereCast(ray, 3, out hit))

@@ -7,7 +7,7 @@ public class BaseItem : MonoBehaviour
     public ItemState State;
     GameObject item;
     public bool GroundAnimationDirection;
-    public float damage = 10;
+    public float damage;
     protected bool doingAnimaton = false;
     public float attackTime = 0.5f;
     protected float time;

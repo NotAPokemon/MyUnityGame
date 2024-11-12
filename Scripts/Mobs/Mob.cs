@@ -18,12 +18,18 @@ public class Mob : BaseEntity
     float timeSinceHurt;
     Material main;
 
+    public int level;
+    public float experiance;
+
 
     protected override void Start()
     {
         base.Start();
         timeSinceLastDmg = 0;
         main = transform.GetComponentInChildren<MeshRenderer>().material;
+        MaxHealth *= level;
+        health *= level;
+        damageAmount *= level;
     }
 
 
@@ -54,6 +60,22 @@ public class Mob : BaseEntity
         }
     }
 
+
+    
+
+
+    public virtual void handleSpawn()
+    {
+        experiance = Random.Range(Calculator.calculateExperiance(level-1), Calculator.calculateExperiance(level)-1);
+    }
+
+
+    protected override void handleDeath()
+    {
+        base.handleDeath();
+        float div = Calculator.randomDiv(1,50);
+        Player.player.exp += experiance / div;
+    }
 
     protected virtual void idle()
     {

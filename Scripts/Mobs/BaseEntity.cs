@@ -55,7 +55,7 @@ public class BaseEntity : MonoBehaviour
             {
                 for (int j = 0; j < drops[i].amount; j++)
                 {
-                    if (EntityManager.ChanceOf(drops[i].dropRate))
+                    if (Calculator.ChanceOf(drops[i].dropRate))
                     {
                         GameObject item = Instantiate(drops[i].item.transform.gameObject);
                         item.transform.position = new Vector3(transform.position.x + UnityEngine.Random.Range(-2, 2), transform.position.y + 1, transform.position.z + UnityEngine.Random.Range(-2,2));
@@ -77,7 +77,7 @@ public class BaseEntity : MonoBehaviour
 
     protected virtual void HandleDamage(float amount)
     {
-        health += amount * (1 - Mathf.Exp(-0.25f * (defense/1000)));
+        health += amount * Calculator.calculateDamageReduction(defense);
         health = Mathf.Clamp(health, 0f, MaxHealth);
     }
 

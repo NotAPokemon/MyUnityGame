@@ -14,6 +14,7 @@ public class Player : BaseEntity
     public GameObject inventory;
     public GameObject Hand;
     public GameObject Manager;
+    public LevelUpPanel lvlUp;
 
     private float hiddenMaxHealth;
     private float hiddendamage;
@@ -21,7 +22,15 @@ public class Player : BaseEntity
     private float hiddenmana;
     private float hiddenmanareg;
     private float hiddenspeed;
+    private float hiddendef;
 
+    private float baseHp;
+    private float baseHpReg;
+    private float baseMana;
+    private float baseManareg;
+    private float baseDmg;
+    private float basespeed;
+    private float baseDef;
 
     public MouseMove mouse;
 
@@ -36,7 +45,8 @@ public class Player : BaseEntity
     float timeFromLastReg = 0f;
 
 
-
+    public float exp;
+    public int level;
 
 
 
@@ -44,7 +54,7 @@ public class Player : BaseEntity
     protected override void Start()
     {
         base.Start();
-        FindObjectOfType<MapGen>().noiseData.seed = UnityEngine.Random.Range(10, 100000);
+        FindObjectOfType<MapGen>().noiseData.seed = Random.Range(10, 100000);
         hiddenMaxHealth = MaxHealth;
         hiddendamage = damageAmount;
         lastHealth = health;
@@ -52,6 +62,15 @@ public class Player : BaseEntity
         hiddenmana = MaxMana;
         hiddenmanareg = manaRegen;
         hiddenspeed = speed;
+        hiddendef = defense;
+        baseHp = MaxHealth / 4;
+        baseMana = MaxMana / 4;
+        baseManareg = manaRegen / 4;
+        baseDmg = damageAmount / 4;
+        basespeed = speed / 4;
+        baseHpReg = regen / 4;
+        baseDef = 5;
+
         player = this;
         for (int i = 0; i < 4; i++)
         {
@@ -85,6 +104,102 @@ public class Player : BaseEntity
                 return manaRegen;
             case "SPEED":
                 return speed;
+            case "LEVEL":
+                return level;
+            case "EXP":
+                return exp;
+            default: break;
+        }
+        return -1;
+    }
+
+
+    public float getHiddenStat(string name)
+    {
+        switch (name)
+        {
+            case "MAX_HEALTH":
+                return hiddenMaxHealth;
+            case "DAMAGE":
+                if (handItems.Count < 1)
+                {
+                    return hiddendamage;
+                }
+                return hiddendamage;
+            case "HEALTH_REGENERATION":
+                return hiddenregen;
+            case "DEFENSE":
+                return hiddendef;
+            case "MAX_MANA":
+                return hiddenmana;
+            case "MANA_REGENERATION":
+                return hiddenmanareg;
+            case "SPEED":
+                return hiddenspeed;
+            case "LEVEL":
+                return level;
+            case "EXP":
+                return exp;
+            default: break;
+        }
+        return -1;
+    }
+
+
+    public void setHiddenStat(string name, float amount)
+    {
+        switch (name)
+        {
+            case "MAX_HEALTH":
+                hiddenMaxHealth += amount;
+                break;
+            case "DAMAGE":
+                hiddendamage += amount;
+                break;
+            case "HEALTH_REGENERATION":
+                hiddenregen += amount;
+                break;
+            case "DEFENSE":
+                hiddendef += amount;
+                break;
+            case "MAX_MANA":
+                hiddenmana += amount;
+                break;
+            case "MANA_REGENERATION":
+                hiddenmanareg += amount;
+                break;
+            case "SPEED":
+                hiddenspeed += amount;
+                break;
+            case "LEVEL":
+                level += 1;
+                break;
+            default: break;
+        }
+    }
+
+    public float getBaseStat(string name)
+    {
+        switch (name)
+        {
+            case "MAX_HEALTH":
+                return baseHp;
+            case "DAMAGE":
+                return baseDmg;
+            case "HEALTH_REGENERATION":
+                return baseHpReg;
+            case "DEFENSE":
+                return baseDef;
+            case "MAX_MANA":
+                return baseMana;
+            case "MANA_REGENERATION":
+                return baseManareg;
+            case "SPEED":
+                return basespeed;
+            case "LEVEL":
+                return 1;
+            case "EXP":
+                return 0;
             default: break;
         }
         return -1;
@@ -321,7 +436,7 @@ public class Player : BaseEntity
         MaxHealth = hp + hiddenMaxHealth;
         damageAmount = dmg + hiddendamage;
         regen = rg + hiddenregen;
-        defense = def;
+        defense = def + hiddendef;
         speed = s + hiddenspeed;
     }
 
@@ -339,7 +454,13 @@ public class Player : BaseEntity
     }
 
     
-
+    void HandleLevels()
+    {
+        if (Calculator.calculateExperiance(level) - exp <= 0)
+        {
+            lvlUp.open();
+        }
+    }
 
     protected override void Update()
     {
@@ -350,6 +471,6 @@ public class Player : BaseEntity
         if (locked) { return; }
         HandleMovement();
         HandleKeyInput();
-        
+        HandleLevels();
     }
 }
