@@ -27,7 +27,7 @@ public class LevelUpPanel : MonoBehaviour
         {
             GameObject newStat = Instantiate(statPrefab, main.transform);
             newStat.SetActive(true);
-            newStat.transform.localPosition = Vector3.zero + Vector3.down * 10f * i;
+            newStat.transform.localPosition = Vector3.zero + Vector3.down * 7.5f * i;
         }
         
     }
