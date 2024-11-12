@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -18,7 +16,7 @@ public class DungeonGenerator : MonoBehaviour
             Vector3 pos = Calculator.getPosInChunk(200,200);
             DungeonEntrance info = newGate.AddComponent<DungeonEntrance>();
             info.density = Mathf.Pow(Random.value,2);
-            info.manaAmount = Random.Range(1, 1000) * info.density;
+            info.manaAmount = Calculator.randomDiv(1,1000) * info.density;
             newGate.transform.localPosition = pos;
             if (Calculator.IsLayerAbove(newGate.gameObject))
             {

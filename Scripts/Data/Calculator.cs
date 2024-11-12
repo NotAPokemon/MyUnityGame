@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Calculator : MonoBehaviour
+public class Calculator
 {
     public static bool ChanceOf(float chanceDenominator)
     {
@@ -20,6 +18,16 @@ public class Calculator : MonoBehaviour
         float z = Random.Range(playerz - spawnRange / 2f, playerz + spawnRange / 2f);
         return new Vector3(x, y, z);
 
+    }
+
+    public static Color cloneColor(Color color)
+    {
+        return new Color(color.r,color.g,color.b,color.a);
+    }
+
+    public static float Round(float x, int places)
+    {
+        return Mathf.Round(x * Mathf.Pow(10,places))/Mathf.Pow(10,places);
     }
 
 
@@ -67,14 +75,10 @@ public class Calculator : MonoBehaviour
         return (1 - Mathf.Exp(-0.25f * (x / 1000)));
     }
 
+ 
     public static float randomDiv(float min, float max)
     {
         return Mathf.Clamp(Random.Range(min, max) * Mathf.Pow(Random.value, 2), min, max);
-    }
-
-    public static void fuckyou()
-    {
-        Debug.Log("im sad");
     }
 
 }

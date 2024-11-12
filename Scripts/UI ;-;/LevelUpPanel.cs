@@ -12,11 +12,14 @@ public class LevelUpPanel : MonoBehaviour
     bool made = false;
     bool uiOpen;
 
+    Player player;
+
     float timeSinceActive = 1.5f;
 
     void Start()
     {
-        main = transform.GetChild(0).gameObject;   
+        main = transform.GetChild(0).gameObject;
+        player = Player.player;
     }
 
 
@@ -33,26 +36,38 @@ public class LevelUpPanel : MonoBehaviour
     }
 
 
+
+
     void updateScreen()
     {
         for (int i = 1; i < main.transform.childCount; i++)
         {
-            main.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>().SetText(statPanel.stats[i - 1].displayName);
-            main.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(statPanel.stats[i - 1].color.r, statPanel.stats[i - 1].color.g, statPanel.stats[i - 1].color.b);
-            main.transform.GetChild(i).GetChild(1).GetComponent<TextMeshProUGUI>().SetText((Mathf.Round(Player.player.getHiddenStat(statPanel.stats[i-1].name) * 10)/10).ToString());
-            main.transform.GetChild(i).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(statPanel.stats[i - 1].color.r, statPanel.stats[i - 1].color.g, statPanel.stats[i - 1].color.b);
-            main.transform.GetChild(i).GetChild(2).GetComponent<TextMeshProUGUI>().SetText("+" +(Mathf.Round(Player.player.getBaseStat(statPanel.stats[i - 1].name) * 10) / 10).ToString());
-            main.transform.GetChild(i).GetChild(2).GetComponent<TextMeshProUGUI>().color = new Color(statPanel.stats[i - 1].color.r, statPanel.stats[i - 1].color.g, statPanel.stats[i - 1].color.b);
-            Player.player.setHiddenStat(statPanel.stats[i - 1].name, Player.player.getBaseStat(statPanel.stats[i - 1].name));
+
+            TextMeshProUGUI name = main.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI current = main.transform.GetChild(i).GetChild(1).GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI add = main.transform.GetChild(i).GetChild(2).GetComponent<TextMeshProUGUI>();
+
+            StatPanel.Stat stat = statPanel.stats[i - 1];
+
+            Color color = Calculator.cloneColor(stat.color);
+
+            name.SetText(stat.displayName);
+            name.color = color;
+
+            current.SetText(Calculator.Round(player.getHiddenStat(stat.name), 1) + "");
+            current.color = color;
+
+            add.SetText("+" +Calculator.Round(player.getBaseStat(stat.name), 1));
+            add.color = color;
+            player.setHiddenStat(stat.name, player.getBaseStat(stat.name));
         }
     }
 
     public void open()
     {
-        int level = Player.player.level;
         updateScreen();
-        Player.player.health = Player.player.MaxHealth;
-        Player.player.mana = Player.player.MaxMana;
+        player.health = player.MaxHealth;
+        player.mana = player.MaxMana;
         if (!uiOpen)
         {
             uiOpen = true;

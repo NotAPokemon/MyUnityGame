@@ -42,7 +42,7 @@ public class StatPanel : MonoBehaviour
             temp.GetChild(0).GetComponent<Image>().sprite = stats[i].icon;
             TextMeshProUGUI name = temp.GetChild(1).GetComponent<TextMeshProUGUI>();
             name.color = new Color(stats[i].color.r, stats[i].color.g, stats[i].color.b);
-            name.SetText(stats[i].displayName + ":  " + (Mathf.Round(stats[i].amount * 100) / 100).ToString());
+            name.SetText(stats[i].displayName + ":  " + Calculator.Round(stats[i].amount,2));
         }
     }
 
