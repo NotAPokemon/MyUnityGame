@@ -22,7 +22,7 @@ public class Calculator
 
     public static Color cloneColor(Color color)
     {
-        return new Color(color.r,color.g,color.b,color.a);
+        return new Color(color.r,color.g,color.b);
     }
 
     public static float Round(float x, int places)

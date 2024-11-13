@@ -4,7 +4,12 @@ public class DungeonGenerator : MonoBehaviour
 {
 
     float lastSpawnTime = 0;
-
+    public float xSize = 0.5f;
+    public float ySize = 0.5f;
+    public GameObject roomPrefab;
+    public static float y;
+    public static float x;
+    public static GameObject room;
 
 
     void Spawn()
@@ -30,8 +35,18 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+
+
+    public static GameObject getRoom()
+    {
+        return FindObjectOfType<DungeonGenerator>().roomPrefab;
+    }
+
     void Update()
     {
+        x = xSize;
+        y = ySize;
+        room = roomPrefab;
         lastSpawnTime += Time.deltaTime;
         if (lastSpawnTime >= 1)
         {

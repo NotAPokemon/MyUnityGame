@@ -19,7 +19,6 @@ public class LevelUpPanel : MonoBehaviour
     void Start()
     {
         main = transform.GetChild(0).gameObject;
-        player = Player.player;
     }
 
 
@@ -32,7 +31,7 @@ public class LevelUpPanel : MonoBehaviour
             newStat.SetActive(true);
             newStat.transform.localPosition = Vector3.zero + Vector3.down * 7.5f * i;
         }
-        
+        player = Player.player;
     }
 
 
@@ -49,16 +48,14 @@ public class LevelUpPanel : MonoBehaviour
 
             StatPanel.Stat stat = statPanel.stats[i - 1];
 
-            Color color = Calculator.cloneColor(stat.color);
-
             name.SetText(stat.displayName);
-            name.color = color;
+            name.color = Calculator.cloneColor(stat.color); ;
 
             current.SetText(Calculator.Round(player.getHiddenStat(stat.name), 1) + "");
-            current.color = color;
+            current.color = Calculator.cloneColor(stat.color); ;
 
             add.SetText("+" +Calculator.Round(player.getBaseStat(stat.name), 1));
-            add.color = color;
+            add.color = Calculator.cloneColor(stat.color); ;
             player.setHiddenStat(stat.name, player.getBaseStat(stat.name));
         }
     }
