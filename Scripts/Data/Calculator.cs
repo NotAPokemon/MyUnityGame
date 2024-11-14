@@ -72,7 +72,7 @@ public class Calculator
 
     public static float calculateDamageReduction(float x)
     {
-        return (1 - Mathf.Exp(-0.25f * (x / 1000)));
+        return (1 - Mathf.Exp(-0.00025f * x));
     }
 
  
