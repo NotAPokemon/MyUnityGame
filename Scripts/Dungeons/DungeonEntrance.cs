@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,14 +9,20 @@ public class DungeonEntrance : MonoBehaviour
     public float density;
     public float manaAmount;
 
+    public ThemeInfo theme;
+
     bool generated = false;
+    bool generating = false;
 
     Room[,] rooms;
 
     Room startRoom;
+    Room lastroom;
 
     int xSize;
     int ySize;
+
+    float cooldown = 3f;
 
     string nameColor;
 
@@ -47,18 +54,19 @@ public class DungeonEntrance : MonoBehaviour
         {
             color = DungeonImages.green;
             nameColor = "D";
-        } else
+        }
+        else
         {
             color = DungeonImages.blue;
             nameColor = "E";
         }
 
-
         SpriteRenderer image = transform.GetComponent<SpriteRenderer>();
         if (image != null)
         {
             image.sprite = color;
-        } else
+        }
+        else
         {
             image = transform.AddComponent<SpriteRenderer>();
             image.sprite = color;
@@ -67,188 +75,178 @@ public class DungeonEntrance : MonoBehaviour
         xSize = (int)(DungeonGenerator.x * manaAmount);
         ySize = (int)(DungeonGenerator.y * manaAmount);
 
-    }
+        xSize = Mathf.Clamp(xSize, 4, 100);
+        ySize = Mathf.Clamp(ySize, 4, 100);
 
-
-
-    int[] pickRandomNeighbor(int x, int y)
-    {
-        List<Room> neighbors = new List<Room>();
-        try
-        {
-            if (rooms[x + 1, y].State == 0)
-            {
-                neighbors.Add(rooms[x + 1, y]);
-            }
-        }
-        catch { }
-
-        try
-        {
-            if (rooms[x - 1, y].State == 0)
-            {
-                neighbors.Add(rooms[x - 1, y]);
-            }
-        }
-        catch { }
-        try
-        {
-
-            if (rooms[x, y + 1].State == 0)
-            {
-                neighbors.Add(rooms[x, y + 1]);
-            }
-        }
-        catch { }
-        try
-        {
-            if (rooms[x, y - 1].State == 0)
-            {
-                neighbors.Add(rooms[x, y - 1]);
-            }
-        }
-        catch { }
-
-
-        int num = Random.Range(1, neighbors.Count + 1);
-
-
-
-
-        Debug.Log(num);
-        Debug.Log(neighbors.Count);
-
-        switch (num - 1)
-        {
-            case 0:
-                x = x + 1;
-                break;
-            case 1:
-                x = x - 1;
-                break;
-            case 2:
-                y = y + 1;
-                break;
-            case 3:
-                y = y - 1;
-                break;
-        }
-        int[] result = new int[3];
-        result[0] = x;
-        result[1] = y;
-        result[2] = num - 1;
-        return result;
-    }
-
-    void handleMazeGen()
-    {
-        int x = Random.Range(1, xSize + 1);
-        int y = Random.Range(1, ySize + 1);
-
-        startRoom = rooms[x - 1, y - 1];
-
-        Room currentRoom = startRoom;
-
-        List<Room> completed = new List<Room>();
-
-        while (completed.Count < xSize * ySize)
-        {
-
-            int[] randomNeighbor = pickRandomNeighbor(x,y);
-            
-            x = randomNeighbor[0];
-            y = randomNeighbor[1];
-
-
-            currentRoom.breakWall(randomNeighbor[2] + 1);
-            currentRoom.State = 1;
-
-            currentRoom = rooms[x, y];
-            currentRoom.breakWall(randomNeighbor[2] + 2, true);
-
-        }
-
-    }
-
-
-    void handleMazeGen(int fakex, int fakey)
-    {
-        int x = Random.Range(1, fakex + 1);
-        int y = Random.Range(1, fakey + 1);
-
-        startRoom = rooms[x - 1, y - 1];
-
-        Debug.Log(x + " " + y);
-
-        Room currentRoom = startRoom;
-
-        List<Room> completed = new List<Room>();
-
-        for (int i = 0; i < 120; i++)
-        {
-
-            int[] randomNeighbor = pickRandomNeighbor(x, y);
-
-            x = randomNeighbor[0];
-            y = randomNeighbor[1];
-
-
-            currentRoom.breakWall(randomNeighbor[2] + 1, true);
-            currentRoom.State = 1;
-
-            currentRoom = rooms[x, y];
-            currentRoom.breakWall(randomNeighbor[2] + 2, true);
-
-        }
-
-    }
-
-    public void generate()
-    {
-        generated = true;
-        rooms = new Room[xSize, ySize];
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                rooms[x, y] = Instantiate(DungeonGenerator.room, transform).GetComponent<Room>();
-                rooms[x, y].transform.localPosition = new Vector3(20 * x,1000,20 * y);
-                rooms[x, y].gameObject.SetActive(true);
-                //add mob
-            }
-        }
-        handleMazeGen();
-    }
-
-
-    public void generate(float xValue, float yValue, GameObject room)
-    {
-        generated = true;
-        rooms = new Room[60,60];
-        for (int x = 0; x < 60; x++)
-        {
-            for (int y = 0; y < 60; y++)
-            {
-                rooms[x, y] = Instantiate(DungeonGenerator.getRoom(), transform).GetComponent<Room>();
-                rooms[x, y].transform.localPosition = new Vector3(20 * x, 1000, 20 * y);
-                rooms[x, y].gameObject.SetActive(true);
-            }
-        }
-        handleMazeGen(60,60);
+        xSize = Mathf.Max(xSize, ySize);
+        ySize = xSize;
     }
 
     void handleEnter()
     {
-        Debug.Log(nameColor);
+        if (generated)
+        {
+            Player.player.transform.position = Calculator.addValue(startRoom.transform.position, y: 1);
+            Player.player.inDungeonn = true;
+        }
+        else if (!generating)
+        {
+            StartCoroutine(GenerateDungeonCoroutine());
+            generating = true;
+        }
     }
 
-    // Update is called once per frame
+
+    IEnumerator GenerateDungeonCoroutine()
+    {
+
+        rooms = new Room[xSize, ySize];
+
+
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int y = 0; y < ySize; y++)
+            {
+                rooms[x, y] = Instantiate(DungeonGenerator.room, transform.parent).GetComponent<Room>();
+                rooms[x, y].transform.position = Calculator.addValue(transform.position, x: x * 20, y: 1000, z: y * 20);
+                int index = Random.Range(0, theme.mobs.Count - 1);
+                rooms[x,y].mob = theme.mobs[index];
+                rooms[x,y].density = density;
+            }
+        }
+
+
+        int startx = Random.Range(0, xSize);
+        int starty = Random.Range(0, ySize);
+        startRoom = rooms[startx, starty];
+
+        yield return StartCoroutine(GenerateMazeCoroutine(startx,starty));
+
+        generated = true;
+    }
+
+    IEnumerator GenerateMazeCoroutine(int sx, int sy)
+    {
+
+        List<Vector2> stack = new List<Vector2>();
+        bool[,] visited = new bool[xSize, ySize];
+        Vector2 currentCell = new Vector2(sx, sy);
+        stack.Add(currentCell);
+        visited[(int)currentCell.x, (int)currentCell.y] = true;
+        lastroom = rooms[(int)currentCell.x, (int)currentCell.y];
+
+
+        while (stack.Count > 0)
+        {
+            List<Vector2> unvisitedNeighbors = GetUnvisitedNeighbors(currentCell, visited);
+
+            if (unvisitedNeighbors.Count > 0)
+            {
+
+                Vector2 neighbor = unvisitedNeighbors[Random.Range(0, unvisitedNeighbors.Count)];
+
+
+                DestroyWallBetween(currentCell, neighbor);
+
+                stack.Add(neighbor);
+                visited[(int)neighbor.x, (int)neighbor.y] = true;
+                currentCell = neighbor;
+
+
+                lastroom = rooms[(int)currentCell.x, (int)currentCell.y];
+            }
+            else
+            {
+
+                currentCell = stack[stack.Count - 1];
+                stack.RemoveAt(stack.Count - 1);
+            }
+
+
+            yield return null;
+        }
+        lastroom.end = true;
+        lastroom.mob = theme.boss;
+        
+    }
+
+
+    List<Vector2> GetUnvisitedNeighbors(Vector2 cell, bool[,] visited)
+    {
+        List<Vector2> neighbors = new List<Vector2>();
+
+        Vector2[] directions = {
+            new Vector2(1, 0), // Right
+            new Vector2(-1, 0), // Left
+            new Vector2(0, 1), // Up
+            new Vector2(0, -1) // Down
+        };
+
+        foreach (var direction in directions)
+        {
+            Vector2 neighbor = cell + direction;
+
+            if (IsInBounds(neighbor) && !visited[(int)neighbor.x, (int)neighbor.y])
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        return neighbors;
+    }
+
+
+    bool IsInBounds(Vector2 cell)
+    {
+        return cell.x >= 0 && cell.x < xSize && cell.y >= 0 && cell.y < ySize;
+    }
+
+
+    void DestroyWallBetween(Vector2 currentCell, Vector2 neighbor)
+    {
+
+        if (neighbor.x == currentCell.x + 1) // Right
+        {
+            rooms[(int)currentCell.x, (int)currentCell.y].breakWall(2); // Destroy right wall of current cell
+            rooms[(int)neighbor.x, (int)neighbor.y].breakWall(3); // Destroy left wall of neighbor cell
+        }
+        else if (neighbor.x == currentCell.x - 1) // Left
+        {
+            rooms[(int)currentCell.x, (int)currentCell.y].breakWall(3); // Destroy left wall of current cell
+            rooms[(int)neighbor.x, (int)neighbor.y].breakWall(2); // Destroy right wall of neighbor cell
+        }
+        else if (neighbor.y == currentCell.y + 1) // Up
+        {
+            rooms[(int)currentCell.x, (int)currentCell.y].breakWall(4); // Destroy top wall of current cell
+            rooms[(int)neighbor.x, (int)neighbor.y].breakWall(1); // Destroy bottom wall of neighbor cell
+        }
+        else if (neighbor.y == currentCell.y - 1) // Down
+        {
+            rooms[(int)currentCell.x, (int)currentCell.y].breakWall(1); // Destroy bottom wall of current cell
+            rooms[(int)neighbor.x, (int)neighbor.y].breakWall(4); // Destroy top wall of neighbor cell
+        }
+    }
+
+
     void Update()
     {
         transform.localRotation = Quaternion.Euler(0, 0, manaAmount + transform.localRotation.eulerAngles.z);
         if (Vector3.Distance(transform.position, Player.player.transform.position) <= 2)
         {
-            handleEnter();
+            if (cooldown >= 1)
+            {
+                handleEnter();
+                cooldown = 0;
+            } else if (generating)
+            {
+                handleEnter();
+            }
+        }
+        cooldown += Time.deltaTime;
+        if (lastroom.cleared)
+        {
+            Player.player.transform.position = transform.position;
+            Destroy(gameObject);
         }
     }
 }

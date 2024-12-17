@@ -81,7 +81,7 @@ public class LevelUpPanel : MonoBehaviour
             make();
         }
         timeSinceActive += Time.deltaTime;
-        if (timeSinceActive >= 5)
+        if (timeSinceActive >= 3)
         {
             main.SetActive(false);
             uiOpen = false;

@@ -15,11 +15,17 @@ public class DungeonGenerator : MonoBehaviour
     void Spawn()
     {
         bool chance = Calculator.ChanceOf(120);
+        if (Player.player.inDungeonn)
+        {
+            return;
+        }
         if (chance)
         {
+            GameObject container = new GameObject("dungeon");
             GameObject newGate = new GameObject("gate");
             Vector3 pos = Calculator.getPosInChunk(200,200);
             DungeonEntrance info = newGate.AddComponent<DungeonEntrance>();
+            info.theme = ThemeCreator.getRandom();
             info.density = Mathf.Pow(Random.value,2);
             info.manaAmount = Calculator.randomDiv(1,1000) * info.density;
             newGate.transform.localPosition = pos;
@@ -31,7 +37,8 @@ public class DungeonGenerator : MonoBehaviour
             pos.y = 200 - (Calculator.GetDistanceToLayerBelow(newGate) - 2);
             newGate.transform.position = pos;
             newGate.gameObject.SetActive(true);
-            newGate.transform.parent = transform;
+            newGate.transform.parent = container.transform;
+            container.transform.parent = transform;
         }
     }
 

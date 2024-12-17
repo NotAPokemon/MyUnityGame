@@ -48,6 +48,8 @@ public class Player : BaseEntity
     public float exp;
     public int level;
 
+    public bool inDungeonn = false;
+
 
 
 

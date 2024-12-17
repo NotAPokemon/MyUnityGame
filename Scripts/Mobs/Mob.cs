@@ -16,6 +16,7 @@ public class Mob : BaseEntity
     public float damageCD;
     protected float timeSinceLastDmg;
     float timeSinceHurt;
+    float timeSinceSpawn = 0;
     Material main;
 
     public int level;
@@ -30,6 +31,7 @@ public class Mob : BaseEntity
         MaxHealth *= level;
         health *= level;
         damageAmount *= level;
+        health = MaxHealth;
     }
 
 
@@ -72,6 +74,11 @@ public class Mob : BaseEntity
 
     protected override void handleDeath()
     {
+        if (timeSinceSpawn < 1)
+        {
+            health = MaxHealth;
+            return;
+        }
         base.handleDeath();
         float div = Calculator.randomDiv(1,50);
         Player.player.exp += experiance / div;
@@ -135,11 +142,13 @@ public class Mob : BaseEntity
     protected virtual bool isMad() { return false; }
 
 
+
     protected override void Update() 
     {
         base.Update();
         timeSinceLastDmg += Time.deltaTime;
         timeSinceHurt += Time.deltaTime;
+        timeSinceSpawn += Time.deltaTime;
         if (timeSinceHurt >= 0.25)
         {
             transform.GetComponentInChildren<MeshRenderer>().material = main;

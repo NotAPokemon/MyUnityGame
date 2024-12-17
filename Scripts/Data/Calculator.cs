@@ -56,6 +56,11 @@ public class Calculator
         return distance;
     }
 
+    public static Vector3 addValue(Vector3 value, float x = 0, float y = 0, float z =0)
+    {
+        return new Vector3(value.x + x, value.y + y, value.z + z);
+    }
+
 
     public static float calculateExperiance(int x)
     {

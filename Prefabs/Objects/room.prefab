@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8531114834687784036}
   - component: {fileID: 1377580567436030098}
   - component: {fileID: 7019603526974766634}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,6 +370,11 @@ MonoBehaviour:
   wall2: {fileID: 450794074121235643}
   wall3: {fileID: 262664307296755405}
   wall4: {fileID: 6440339253347488062}
+  cleared: 0
+  end: 0
+  density: 0
+  spawnAmount: 0
+  entities: []
 --- !u!1 &6373113124768226212
 GameObject:
   m_ObjectHideFlags: 0
